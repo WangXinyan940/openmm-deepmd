@@ -1,0 +1,4 @@
+#include "CudaDeepMDKernelSources.h"
+
+using namespace DeepMDPlugin;
+using namespace std;
