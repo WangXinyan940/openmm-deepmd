@@ -1,5 +1,7 @@
 #ifndef REFERENCE_DEEPMD_KERNELS_H_
 #define REFERENCE_DEEPMD_KERNELS_H_
+
+#include "NNPInter.h"
 #include "DeepMDKernels.h"
 #include "openmm/Platform.h"
 #include <vector>
@@ -11,8 +13,7 @@ namespace DeepMDPlugin {
  */
 class ReferenceCalcDeepMDForceKernel : public CalcDeepMDForceKernel {
 public:
-    ReferenceCalcDeepMDForceKernel(std::string name, const OpenMM::Platform& platform) : CalcDeepMDForceKernel(name, platform),
-            positionsTensor(NULL), boxVectorsTensor(NULL) {
+    ReferenceCalcDeepMDForceKernel(std::string name, const OpenMM::Platform& platform) : CalcDeepMDForceKernel(name, platform) {
     }
     ~ReferenceCalcDeepMDForceKernel();
     /**
@@ -20,15 +21,9 @@ public:
      * 
      * @param system         the System this kernel will be applied to
      * @param force          the DeepMDForce this kernel will be used for
-     * @param session        the TensorFlow session in which to do calculations
-     * @param graph          the TensorFlow graph to use for computing forces and energy
-     * @param positionsType  the data type of the "positions" tensor
-     * @param boxType        the data type of the "boxvectors" tensor
-     * @param energyType     the data type of the "energy" tensor
-     * @param forcesType     the data type of the "forces" tensor
+     * @param model          the DeepMD-kit model
      */
-    void initialize(const OpenMM::System& system, const DeepMDForce& force, TF_Session* session, TF_Graph* graph,
-                    TF_DataType positionsType, TF_DataType boxType, TF_DataType energyType, TF_DataType forcesType);
+    void initialize(const OpenMM::System& system, const DeepMDForce& force, const NNPInter& model);
     /**
      * Execute the kernel to calculate the forces and/or energy.
      *
@@ -39,11 +34,10 @@ public:
      */
     double execute(OpenMM::ContextImpl& context, bool includeForces, bool includeEnergy);
 private:
-    TF_Session* session;
-    TF_Graph* graph;
-    TF_Tensor* positionsTensor;
-    TF_Tensor* boxVectorsTensor;
-    TF_DataType positionsType, boxType, energyType, forcesType;
+    NNPInter& deepmodel;
+    std::vector<int>& mask;
+    std::vector<int>& types;
+    bool doubleModel;
     std::vector<float> positions, boxVectors;
     bool usePeriodic;
 };

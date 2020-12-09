@@ -8,41 +8,27 @@ using namespace OpenMM;
 using namespace std;
 
 CudaCalcDeepMDForceKernel::~CudaCalcDeepMDForceKernel() {
-    if (positionsTensor != NULL)
-        TF_DeleteTensor(positionsTensor);
-    if (boxVectorsTensor != NULL)
-        TF_DeleteTensor(boxVectorsTensor);
 }
 
-void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDForce& force, TF_Session* session, TF_Graph* graph,
-            TF_DataType positionsType, TF_DataType boxType, TF_DataType energyType, TF_DataType forcesType) {
-    cu.setAsCurrent();
-    this->session = session;
-    this->graph = graph;
-    this->positionsType = positionsType;
-    this->boxType = boxType;
-    this->energyType = energyType;
-    this->forcesType = forcesType;
-    usePeriodic = force.usesPeriodicBoundaryConditions();
+void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDForce& force, const NNPInter& model) {
+    
     int numParticles = system.getNumParticles();
+    // hold model
+    NNPInter& deepmodel = model;
 
-    // Construct input tensors.
-
-    int64_t positionsDims[] = {numParticles, 3};
-    positionsTensor = TF_AllocateTensor(positionsType, positionsDims, 2, numParticles*3*TF_DataTypeSize(positionsType));
-    if (usePeriodic) {
-        int64_t boxVectorsDims[] = {3, 3};
-        boxVectorsTensor = TF_AllocateTensor(boxType, boxVectorsDims, 2, 9*TF_DataTypeSize(boxType));
-    }
+    // create input tensors
+    mask = force.getMask();
+    types = force.getTypes();
+    doubleModel = force.useDoublePrecision();
 
     // Inititalize CUDA objects.
-
-    networkForces.initialize(cu, 3*numParticles, TF_DataTypeSize(forcesType), "networkForces");
     map<string, string> defines;
-    if (forcesType == TF_FLOAT)
-        defines["FORCES_TYPE"] = "float";
-    else
+    if (doubleModel)
         defines["FORCES_TYPE"] = "double";
+        networkForces.initialize(cu, 3*numParticles, sizeof(double), "networkForces");
+    else
+        defines["FORCES_TYPE"] = "float";
+        networkForces.initialize(cu, 3*numParticles, sizeof(float), "networkForces");
     CUmodule module = cu.createModule(CudaDeepMDKernelSources::DeepMDForce, defines);
     addForcesKernel = cu.getKernel(module, "addForces");
 }
@@ -51,69 +37,81 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
     vector<Vec3> pos;
     context.getPositions(pos);
     int numParticles = cu.getNumAtoms();
-    if (positionsType == TF_FLOAT) {
-        float* positions = reinterpret_cast<float*>(TF_TensorData(positionsTensor));
-        for (int i = 0; i < numParticles; i++) {
-            positions[3*i] = pos[i][0];
-            positions[3*i+1] = pos[i][1];
-            positions[3*i+2] = pos[i][2];
+    
+    if (doubleModel) {
+        vector<double> positions;
+        for (int i = 0; i < mask.size(); i++) {
+            positions.push_back(pos[mask[i]][0]);
+            positions.push_back(pos[mask[i]][1]);
+            positions.push_back(pos[mask[i]][2]);
         }
     }
     else {
-        double* positions = reinterpret_cast<double*>(TF_TensorData(positionsTensor));
-        for (int i = 0; i < numParticles; i++) {
-            positions[3*i] = pos[i][0];
-            positions[3*i+1] = pos[i][1];
-            positions[3*i+2] = pos[i][2];
+        vector<float> positions;
+        for (int i = 0; i < mask.size(); i++) {
+            positions.push_back(pos[mask[i]][0]);
+            positions.push_back(pos[mask[i]][1]);
+            positions.push_back(pos[mask[i]][2]);
         }
     }
     if (usePeriodic) {
         Vec3 box[3];
         cu.getPeriodicBoxVectors(box[0], box[1], box[2]);
-        if (boxType == TF_FLOAT) {
-            float* boxVectors = reinterpret_cast<float*>(TF_TensorData(boxVectorsTensor));
+        if (doubleModel) {
+            vector<double> boxVectors;
             for (int i = 0; i < 3; i++)
                 for (int j = 0; j < 3; j++)
-                    boxVectors[3*i+j] = box[i][j];
+                    boxVectors.push_back(box[i][j]);
         }
         else {
-            double* boxVectors = reinterpret_cast<double*>(TF_TensorData(boxVectorsTensor));
+            vector<float> boxVectors;
             for (int i = 0; i < 3; i++)
                 for (int j = 0; j < 3; j++)
-                    boxVectors[3*i+j] = box[i][j];
+                    boxVectors.push_back(box[i][j]);
+        }
+    } else {
+        if (doubleModel){
+            vector<double> boxVectors(9,0.0);
+            boxVectors[0] = 9999.9;
+            boxVectors[4] = 9999.9;
+            boxVectors[8] = 9999.9;
+        } else {
+            vector<float> boxVectors(9,0.0);
+            boxVectors[0] = 9999.9;
+            boxVectors[4] = 9999.9;
+            boxVectors[8] = 9999.9;
         }
     }
-    vector<TF_Output> inputs, outputs;
-    int forceOutputIndex = 0;
-    if (includeEnergy)
-        outputs.push_back({TF_GraphOperationByName(graph, "energy"), 0});
-    if (includeForces) {
-        forceOutputIndex = outputs.size();
-        outputs.push_back({TF_GraphOperationByName(graph, "forces"), 0});
+    
+    // run model
+    if (doubleModel){
+        vector<double> force_tmp(positions.size()*3, 0);
+        vector<double> virial(9,0);
+        double ener = 0;
+        model.compute(ener, force_tmp, virial, positions, types, boxVectors);
+    } else {
+        vector<float> force_tmp(positions.size()*3,0);
+        vector<float> virial(9,0);
+        double ener = 0;
+        model.compute(ener, force_tmp, virial, positions, types, boxVectors);
     }
-    vector<TF_Tensor*> inputTensors, outputTensors(outputs.size());
-    inputs.push_back({TF_GraphOperationByName(graph, "positions"), 0});
-    inputTensors.push_back(positionsTensor);
-    if (usePeriodic) {
-        inputs.push_back({TF_GraphOperationByName(graph, "boxvectors"), 0});
-        inputTensors.push_back(boxVectorsTensor);
-    }
-    TF_Status* status = TF_NewStatus();
-    TF_SessionRun(session, NULL, &inputs[0], &inputTensors[0], inputs.size(),
-                  &outputs[0], &outputTensors[0], outputs.size(),
-                  NULL, 0, NULL, status);
-    if (TF_GetCode(status) != TF_OK)
-        throw OpenMMException(string("Error running TensorFlow session: ")+TF_Message(status));
-    TF_DeleteStatus(status);
+
     double energy = 0.0;
     if (includeEnergy) {
-        if (energyType == TF_FLOAT)
-            energy = reinterpret_cast<float*>(TF_TensorData(outputTensors[0]))[0];
-        else
-            energy = reinterpret_cast<double*>(TF_TensorData(outputTensors[0]))[0];
+        energy = ener;
     }
     if (includeForces) {
-        const void* data = TF_TensorData(outputTensors[forceOutputIndex]);
+        if (cu.getUseDoublePrecision()){
+            vector<double> data(3*pos.size(),0);
+        } else {
+            vector<float> data(3*pos.size(),0);
+        }
+        for(int i=0;i<mask.size();i++){
+            int p = mask[i];
+            for(int j=0;j<3;j++){
+                data[3*p+j] = force_tmp[3*i+j];
+            }
+        }
         networkForces.upload(data);
         int paddedNumAtoms = cu.getPaddedNumAtoms();
         void* args[] = {&networkForces.getDevicePointer(), &cu.getForce().getDevicePointer(), &cu.getAtomIndexArray().getDevicePointer(), &numParticles, &paddedNumAtoms};
