@@ -33,7 +33,7 @@ void ReferenceCalcDeepMDForceKernel::initialize(const System& system, const Deep
 
     // create input tensors
     mask = force.getMask();
-    types = force.getTypes();
+    types = force.getType();
     doubleModel = force.useDoublePrecision();
 }
 
@@ -59,8 +59,7 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
         }
     }
     if (usePeriodic) {
-        Vec3 box[3];
-        cu.getPeriodicBoxVectors(box[0], box[1], box[2]);
+        Vec3 box[3] = extractBoxVectors(context);
         if (doubleModel) {
             vector<double> boxVectors;
             for (int i = 0; i < 3; i++)
