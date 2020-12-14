@@ -48,9 +48,9 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
     
     vector<VALUETYPE> positions;
     for (int i = 0; i < mask.size(); i++) {
-        positions.push_back(pos[mask[i]][0]);
-        positions.push_back(pos[mask[i]][1]);
-        positions.push_back(pos[mask[i]][2]);
+        positions.push_back(pos[mask[i]][0]*10);
+        positions.push_back(pos[mask[i]][1]*10);
+        positions.push_back(pos[mask[i]][2]*10);
     }
 
     vector<VALUETYPE> boxVectors(9,0);
@@ -59,11 +59,11 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
         cu.getPeriodicBoxVectors(box[0], box[1], box[2]);
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 3; j++)
-                boxVectors.push_back(box[i][j]);
+                boxVectors.push_back(box[i][j]*10);
     } else {
-        boxVectors[0] = 9999.9;
-        boxVectors[4] = 9999.9;
-        boxVectors[8] = 9999.9;
+        boxVectors[0] = 99999.9;
+        boxVectors[4] = 99999.9;
+        boxVectors[8] = 99999.9;
     }
     
     // run model
@@ -74,7 +74,7 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
 
     double energy = 0.0;
     if (includeEnergy) {
-        energy = ener;
+        energy = ener*96;
     }
     if (includeForces) {
         // vector<VALUETYPE> data(3*pos.size(),0);

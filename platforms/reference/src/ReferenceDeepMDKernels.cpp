@@ -52,21 +52,21 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
 
     vector<VALUETYPE> positions;
     for (int i = 0; i < mask.size(); i++) {
-        positions.push_back(pos[mask[i]][0]);
-        positions.push_back(pos[mask[i]][1]);
-        positions.push_back(pos[mask[i]][2]);
+        positions.push_back(pos[mask[i]][0]*10);
+        positions.push_back(pos[mask[i]][1]*10);
+        positions.push_back(pos[mask[i]][2]*10);
     }
     if (usePeriodic) {
         Vec3* box = extractBoxVectors(context);
         vector<VALUETYPE> boxVectors;
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 3; j++)
-                boxVectors.push_back(box[i][j]);
+                boxVectors.push_back(box[i][j]*10);
     } else {
         vector<VALUETYPE> boxVectors(9,0.0);
-        boxVectors[0] = 9999.9;
-        boxVectors[4] = 9999.9;
-        boxVectors[8] = 9999.9;
+        boxVectors[0] = 99999.9;
+        boxVectors[4] = 99999.9;
+        boxVectors[8] = 99999.9;
     }
 
     // run model
@@ -77,14 +77,14 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
 
     double energy = 0.0;
     if (includeEnergy) {
-        energy = ener;
+        energy = ener * 96.0;
     }
     if (includeForces) {
         for (int i = 0; i < mask.size(); i++) {
             int p = mask[i];
-            force[p][0] += force_tmp[3*i];
-            force[p][1] += force_tmp[3*i+1];
-            force[p][2] += force_tmp[3*i+2];
+            force[p][0] += force_tmp[3*i]*960.0;
+            force[p][1] += force_tmp[3*i+1]*960.0;
+            force[p][2] += force_tmp[3*i+2]*960.0;
         }
     }
     return energy;
