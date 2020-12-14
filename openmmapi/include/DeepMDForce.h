@@ -75,7 +75,7 @@ protected:
     OpenMM::ForceImpl* createImpl() const;
 private:
     bool useDouble;
-    std::string& file;
+    std::string& dpfile;
     bool usePeriodic;
     std::vector<int> innermask;
     std::vector<int> innertype;
