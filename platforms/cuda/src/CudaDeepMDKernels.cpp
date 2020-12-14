@@ -54,15 +54,14 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
         positions.push_back(pos[mask[i]][2]);
     }
 
+    vector<VALUETYPE> boxVectors(9,0);
     if (usePeriodic) {
         Vec3 box[3];
         cu.getPeriodicBoxVectors(box[0], box[1], box[2]);
-        vector<VALUETYPE> boxVectors;
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 3; j++)
                 boxVectors.push_back(box[i][j]);
     } else {
-        vector<VALUETYPE> boxVectors(9,0.0);
         boxVectors[0] = 9999.9;
         boxVectors[4] = 9999.9;
         boxVectors[8] = 9999.9;
