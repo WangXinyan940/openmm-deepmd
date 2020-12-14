@@ -17,12 +17,6 @@ LINK_DIRECTORIES("${DEEPMD_DIR}/lib")
 # Specify the C++ version we are building for.
 SET (CMAKE_CXX_STANDARD 11)
 
-# Set flags for linking on mac
-IF(APPLE)
-    SET (CMAKE_INSTALL_NAME_DIR "@rpath")
-    SET(EXTRA_COMPILE_FLAGS "-msse2 -stdlib=libc++")
-ENDIF(APPLE)
-
 # Select where to install
 IF(${CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT})
     IF(WIN32)
@@ -65,7 +59,7 @@ ENDFOREACH(dir)
 # Collect up source files
 SET(SOURCE_FILES) # empty
 SET(SOURCE_INCLUDE_FILES)
-FOREACH(subdir ${NN_PLUGIN_SOURCE_SUBDIRS})
+FOREACH(subdir ${DEEPMD_PLUGIN_SOURCE_SUBDIRS})
     FILE(GLOB src_files  ${CMAKE_CURRENT_SOURCE_DIR}/${subdir}/src/*.cpp)
     FILE(GLOB incl_files ${CMAKE_CURRENT_SOURCE_DIR}/${subdir}/src/*.h)
     SET(SOURCE_FILES         ${SOURCE_FILES}         ${src_files})   #append
