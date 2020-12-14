@@ -29,7 +29,7 @@ ReferenceCalcDeepMDForceKernel::~ReferenceCalcDeepMDForceKernel() {
 void ReferenceCalcDeepMDForceKernel::initialize(const System& system, const DeepMDForce& force, const NNPInter& model) {
     int numParticles = system.getNumParticles();
     // hold model
-    NNPInter& deepmodel = model;
+    NNPInter deepmodel = model;
 
     // create input tensors
     mask = force.getMask();
