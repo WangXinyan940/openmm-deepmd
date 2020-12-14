@@ -45,8 +45,6 @@ public:
     const std::vector<int>& getMask() const;
     void setType(std::vector<int> type);
     const std::vector<int>& getType() const;
-    void setUseDoublePrecision(bool usedouble);
-    bool useDoublePrecision() const;
     void setUsesPeriodicBoundaryConditions(bool periodic);
     bool usesPeriodicBoundaryConditions() const;
 
