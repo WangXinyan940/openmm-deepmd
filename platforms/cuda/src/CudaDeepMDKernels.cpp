@@ -26,7 +26,7 @@ void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDFor
 
     // create input tensors
     mask = force.getMask();
-    types = force.getTypes();
+    types = force.getType();
     doubleModel = force.useDoublePrecision();
 
     // Inititalize CUDA objects.
