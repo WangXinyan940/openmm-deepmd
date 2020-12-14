@@ -2,6 +2,7 @@
 #include "CudaDeepMDKernelSources.h"
 #include "openmm/internal/ContextImpl.h"
 #include <map>
+#include <iostream>
 
 using namespace DeepMDPlugin;
 using namespace OpenMM;
@@ -45,6 +46,8 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
     vector<Vec3> pos;
     context.getPositions(pos);
     int numParticles = cu.getNumAtoms();
+
+    cout << "Goes in" << endl;
     
     vector<VALUETYPE> positions;
     for (int i = 0; i < mask.size(); i++) {
@@ -52,6 +55,7 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
         positions.push_back(pos[mask[i]][1]*10);
         positions.push_back(pos[mask[i]][2]*10);
     }
+    cout << "Position loaded" << endl;
 
     vector<VALUETYPE> boxVectors(9,0);
     if (usePeriodic) {
@@ -65,12 +69,14 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
         boxVectors[4] = 99999.9;
         boxVectors[8] = 99999.9;
     }
+    cout << "Vector loaded" << endl;
     
     // run model
     vector<VALUETYPE> force_tmp(positions.size()*3, 0);
     vector<VALUETYPE> virial(9,0);
     ENERGYTYPE ener = 0;
     deepmodel.compute(ener, force_tmp, virial, positions, types, boxVectors);
+    cout << "Model finished" << endl;
 
     double energy = 0.0;
     if (includeEnergy) {
