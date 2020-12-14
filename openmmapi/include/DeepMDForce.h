@@ -19,9 +19,8 @@ public:
      * to a binary protocol buffer file.
      *
      * @param filename   the path to the file containing the model
-     * @param ifDouble   if use double precision in DeepMD model
      */
-    DeepMDForce(std::string& filename, bool ifDouble);
+    DeepMDForce(std::string& filename);
     /**
      * Set mask for DeepMD force field. Only the index in mask vector would be
      * included in DeepMD model
@@ -63,18 +62,9 @@ public:
      * Get whether this force makes use of periodic boundary conditions.
      */
     bool usesPeriodicBoundaryConditions() const;
-    /**
-     * Set whether using double precision in DeepMD model.
-     */
-    void setUseDoublePrecision(bool usedouble);
-    /**
-     * Get whether using double precision.
-     */
-    bool useDoublePrecision() const;
 protected:
     OpenMM::ForceImpl* createImpl() const;
 private:
-    bool useDouble;
     std::string dpfile;
     bool usePeriodic;
     std::vector<int> innermask;

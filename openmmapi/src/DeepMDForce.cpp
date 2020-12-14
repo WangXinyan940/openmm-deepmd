@@ -8,7 +8,7 @@ using namespace DeepMDPlugin;
 using namespace OpenMM;
 using namespace std;
 
-DeepMDForce::DeepMDForce(std::string& filename, bool ifDouble) : dpfile(filename), usePeriodic(false), useDouble(ifDouble) {
+DeepMDForce::DeepMDForce(std::string& filename) : dpfile(filename), usePeriodic(false) {
 }
 
 void DeepMDForce::setFile(std::string& filename) {
@@ -49,12 +49,4 @@ void DeepMDForce::setUsesPeriodicBoundaryConditions(bool periodic) {
 
 bool DeepMDForce::usesPeriodicBoundaryConditions() const {
     return usePeriodic;
-}
-
-void DeepMDForce::setUseDoublePrecision(bool usedouble) {
-    useDouble = usedouble;
-}
-
-bool DeepMDForce::useDoublePrecision() const {
-    return useDouble;
 }
