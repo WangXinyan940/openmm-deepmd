@@ -8,7 +8,7 @@ using namespace DeepMDPlugin;
 using namespace OpenMM;
 using namespace std;
 
-DeepMDForce::DeepMDForce(const std::string& filename, bool ifDouble) : file(filename), usePeriodic(false), useDouble(false) {
+DeepMDForce::DeepMDForce(const std::string& filename, bool ifDouble) : file(filename), usePeriodic(false), useDouble(ifDouble) {
 }
 
 void setFile(std::string& filename) {
