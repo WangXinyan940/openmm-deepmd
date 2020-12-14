@@ -5,7 +5,7 @@
 #include "openmm/OpenMMException.h"
 #include <vector>
 
-using namespace NNPlugin;
+using namespace DeepMDPlugin;
 using namespace OpenMM;
 using namespace std;
 
