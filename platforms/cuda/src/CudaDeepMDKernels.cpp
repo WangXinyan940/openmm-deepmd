@@ -37,8 +37,8 @@ void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDFor
         networkForces.initialize(cu, 3*numParticles, sizeof(double), "networkForces");
     #else
         cout << "Low Prec" << endl;
-        defines["FORCES_TYPE"] = "float";
-        networkForces.initialize(cu, 3*numParticles, sizeof(float), "networkForces");
+        defines["FORCES_TYPE"] = "double";
+        networkForces.initialize(cu, 3*numParticles, sizeof(double), "networkForces");
     #endif
     CUmodule module = cu.createModule(CudaDeepMDKernelSources::deepMDForce, defines);
     addForcesKernel = cu.getKernel(module, "addForces");
@@ -77,6 +77,11 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
     vector<VALUETYPE> force_tmp(positions.size()*3, 0);
     vector<VALUETYPE> virial(9,0);
     ENERGYTYPE ener = 0;
+    cout << "pos size:    " << positions.size()  << "    ";
+    cout << "virial size: " << virial.size()     << "    ";
+    cout << "box size:    " << boxVectors.size() << "    ";
+    cout << "types size:  " << types.size()      << "    ";
+    cout << "forces size: " << force_tmp.size()  << endl;
     deepmodel.compute(ener, force_tmp, virial, positions, types, boxVectors);
     cout << "Model finished" << endl;
 
