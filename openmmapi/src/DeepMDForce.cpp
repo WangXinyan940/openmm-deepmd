@@ -26,7 +26,7 @@ void setMask(std::vector<int> mask){
 }
 
 const std::vector<int>& getMask() const {
-    return innermask&;
+    return innermask;
 }
 
 void setType(std::vector<int> type) {
@@ -36,7 +36,7 @@ void setType(std::vector<int> type) {
 }
 
 const std::vector<int>& getType() const {
-    return innertype&;
+    return innertype;
 }
 
 ForceImpl* DeepMDForce::createImpl() const {
