@@ -32,9 +32,11 @@ void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDFor
     // Inititalize CUDA objects.
     map<string, string> defines;
     #ifdef HIGH_PREC
+        cout << "High Prec" << endl;
         defines["FORCES_TYPE"] = "double";
         networkForces.initialize(cu, 3*numParticles, sizeof(double), "networkForces");
     #else
+        cout << "Low Prec" << endl;
         defines["FORCES_TYPE"] = "float";
         networkForces.initialize(cu, 3*numParticles, sizeof(float), "networkForces");
     #endif
