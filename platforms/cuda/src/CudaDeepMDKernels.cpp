@@ -78,18 +78,16 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
         energy = ener;
     }
     if (includeForces) {
-        if (cu.getUseDoublePrecision()){
-            vector<double> data(3*pos.size(),0);
-        } else {
-            vector<float> data(3*pos.size(),0);
-        }
-        for(int i=0;i<mask.size();i++){
-            int p = mask[i];
-            for(int j=0;j<3;j++){
-                data[3*p+j] = force_tmp[3*i+j];
-            }
-        }
-        networkForces.upload(data);
+        // vector<VALUETYPE> data(3*pos.size(),0);
+        // for(int i=0;i<mask.size();i++){
+        //     int p = mask[i];
+        //     for(int j=0;j<3;j++){
+        //         data[3*p+j] = force_tmp[3*i+j];
+        //     }
+        // }
+        // networkForces.upload(data);
+        networkForces.upload(force_tmp);
+
         int paddedNumAtoms = cu.getPaddedNumAtoms();
         void* args[] = {&networkForces.getDevicePointer(), &cu.getForce().getDevicePointer(), &cu.getAtomIndexArray().getDevicePointer(), &numParticles, &paddedNumAtoms};
         cu.executeKernel(addForcesKernel, args, numParticles);
