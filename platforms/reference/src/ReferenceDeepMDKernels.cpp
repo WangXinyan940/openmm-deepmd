@@ -59,7 +59,7 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
         }
     }
     if (usePeriodic) {
-        Vec3 box[3] = extractBoxVectors(context);
+        Vec3* box = extractBoxVectors(context);
         if (doubleModel) {
             vector<double> boxVectors;
             for (int i = 0; i < 3; i++)
