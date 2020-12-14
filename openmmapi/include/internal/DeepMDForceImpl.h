@@ -35,7 +35,6 @@
 #include "DeepMDForce.h"
 #include "openmm/internal/ForceImpl.h"
 #include "openmm/Kernel.h"
-#include <c_api.h>
 #include <utility>
 #include <set>
 #include <string>
