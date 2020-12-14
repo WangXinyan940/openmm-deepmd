@@ -8,7 +8,7 @@ using namespace DeepMDPlugin;
 using namespace OpenMM;
 using namespace std;
 
-DeepMDForceImpl::DeepMDForceImpl(const DeepMDForce& owner) : owner(owner), graph(NULL), session(NULL), status(TF_NewStatus()) {
+DeepMDForceImpl::DeepMDForceImpl(const DeepMDForce& owner) : owner(owner) {
 }
 
 DeepMDForceImpl::~DeepMDForceImpl() {
