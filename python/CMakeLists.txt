@@ -1,4 +1,4 @@
-set(WRAP_FILE DEEPMDPluginWrapper.cpp)
+set(WRAP_FILE DeepMDPluginWrapper.cpp)
 set(MODULE_NAME openmmdeepmd)
 
 # Execute SWIG to generate source code for the Python module.
