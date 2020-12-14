@@ -74,7 +74,7 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
     cout << "Box loaded" << endl;
     
     // run model
-    vector<VALUETYPE> force_tmp(positions.size()*3, 0);
+    vector<VALUETYPE> force_tmp(positions.size(), 0);
     vector<VALUETYPE> virial(9,0);
     ENERGYTYPE ener = 0;
     cout << "pos size:    " << positions.size()  << "    ";
