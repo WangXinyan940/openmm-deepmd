@@ -11,7 +11,7 @@ using namespace std;
 DeepMDForce::DeepMDForce(std::string& filename, bool ifDouble) : dpfile(filename), usePeriodic(false), useDouble(ifDouble) {
 }
 
-void setFile(std::string filename) {
+void DeepMDForce::setFile(std::string& filename) {
     dpfile = filename;
 }
 
@@ -19,23 +19,23 @@ const string& DeepMDForce::getFile() const {
     return dpfile;
 }
 
-void setMask(std::vector<int> mask){
+void DeepMDForce::setMask(std::vector<int> mask){
     for(int i=0;i<mask.size();i++){
         innermask.push_back(mask[i]);
     }
 }
 
-const std::vector<int>& getMask() const {
+const std::vector<int>& DeepMDForce::getMask() const {
     return innermask;
 }
 
-void setType(std::vector<int> type) {
+void DeepMDForce::setType(std::vector<int> type) {
     for(int i=0;i<type.size();i++){
         innertype.push_back(type[i]);
     }
 }
 
-const std::vector<int>& getType() const {
+const std::vector<int>& DeepMDForce::getType() const {
     return innertype;
 }
 
@@ -51,10 +51,10 @@ bool DeepMDForce::usesPeriodicBoundaryConditions() const {
     return usePeriodic;
 }
 
-void setUseDoublePrecision(bool usedouble) {
+void DeepMDForce::setUseDoublePrecision(bool usedouble) {
     useDouble = usedouble;
 }
 
-bool useDoublePrecision() const {
+bool DeepMDForce::useDoublePrecision() const {
     return useDouble;
 }

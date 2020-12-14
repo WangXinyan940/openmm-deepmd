@@ -46,7 +46,7 @@ public:
      * 
      * @param filename  the path to the file containing the model
      */
-    void setFile(std::string filename);
+    void setFile(std::string& filename);
     /**
      * Get the path to the file containing the freezed DeepMD-kit model.
      */
