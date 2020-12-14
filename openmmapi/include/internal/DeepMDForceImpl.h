@@ -35,6 +35,7 @@
 #include "DeepMDForce.h"
 #include "openmm/internal/ForceImpl.h"
 #include "openmm/Kernel.h"
+#include "NNPInter.h"
 #include <utility>
 #include <set>
 #include <string>
@@ -66,6 +67,7 @@ public:
 private:
     const DeepMDForce& owner;
     OpenMM::Kernel kernel;
+    NNPInter model;
 };
 
 } // namespace DeepMDPlugin
