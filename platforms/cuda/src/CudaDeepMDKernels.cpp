@@ -65,7 +65,7 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
         cu.getPeriodicBoxVectors(box[0], box[1], box[2]);
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 3; j++)
-                boxVectors.push_back(box[i][j]*10);
+                boxVectors[i*3+j] = box[i][j]*10;
     } else {
         boxVectors[0] = 99999.9;
         boxVectors[4] = 99999.9;
