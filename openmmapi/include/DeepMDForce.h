@@ -20,7 +20,7 @@ public:
      *
      * @param filename   the path to the file containing the model
      */
-    DeepMDForce(std::string& filename);
+    DeepMDForce(std::string filename);
     /**
      * Set mask for DeepMD force field. Only the index in mask vector would be
      * included in DeepMD model

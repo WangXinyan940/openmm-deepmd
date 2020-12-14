@@ -8,7 +8,7 @@ using namespace DeepMDPlugin;
 using namespace OpenMM;
 using namespace std;
 
-DeepMDForce::DeepMDForce(std::string& filename) : dpfile(filename), usePeriodic(false) {
+DeepMDForce::DeepMDForce(std::string filename) : dpfile(filename), usePeriodic(false) {
 }
 
 void DeepMDForce::setFile(std::string& filename) {
