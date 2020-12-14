@@ -5,11 +5,11 @@
 #include "openmm/reference/ReferencePlatform.h"
 
 #ifdef HIGH_PREC
-typedef double VALUETYPE
-typedef double ENERGYTYPE
+typedef double VALUETYPE;
+typedef double ENERGYTYPE;
 #else
-typedef float VALUETYPE
-typedef double ENERGYTYPE
+typedef float VALUETYPE;
+typedef double ENERGYTYPE;
 #endif
 
 using namespace DeepMDPlugin;
