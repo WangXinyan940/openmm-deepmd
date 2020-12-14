@@ -7,6 +7,14 @@ using namespace DeepMDPlugin;
 using namespace OpenMM;
 using namespace std;
 
+#ifdef HIGH_PREC
+typedef double VALUETYPE
+typedef double ENERGYTYPE
+#else
+typedef float VALUETYPE
+typedef double ENERGYTYPE
+#endif
+
 CudaCalcDeepMDForceKernel::~CudaCalcDeepMDForceKernel() {
 }
 
@@ -14,7 +22,7 @@ void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDFor
     
     int numParticles = system.getNumParticles();
     // hold model
-    NNPInter& deepmodel = model;
+    NNPInter deepmodel = model;
 
     // create input tensors
     mask = force.getMask();
@@ -23,12 +31,13 @@ void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDFor
 
     // Inititalize CUDA objects.
     map<string, string> defines;
-    if (doubleModel)
+    #ifdef HIGH_PREC
         defines["FORCES_TYPE"] = "double";
         networkForces.initialize(cu, 3*numParticles, sizeof(double), "networkForces");
-    else
+    #else
         defines["FORCES_TYPE"] = "float";
         networkForces.initialize(cu, 3*numParticles, sizeof(float), "networkForces");
+    #endif
     CUmodule module = cu.createModule(CudaDeepMDKernelSources::DeepMDForce, defines);
     addForcesKernel = cu.getKernel(module, "addForces");
 }
@@ -38,63 +47,32 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
     context.getPositions(pos);
     int numParticles = cu.getNumAtoms();
     
-    if (doubleModel) {
-        vector<double> positions;
-        for (int i = 0; i < mask.size(); i++) {
-            positions.push_back(pos[mask[i]][0]);
-            positions.push_back(pos[mask[i]][1]);
-            positions.push_back(pos[mask[i]][2]);
-        }
+    vector<VALUETYPE> positions;
+    for (int i = 0; i < mask.size(); i++) {
+        positions.push_back(pos[mask[i]][0]);
+        positions.push_back(pos[mask[i]][1]);
+        positions.push_back(pos[mask[i]][2]);
     }
-    else {
-        vector<float> positions;
-        for (int i = 0; i < mask.size(); i++) {
-            positions.push_back(pos[mask[i]][0]);
-            positions.push_back(pos[mask[i]][1]);
-            positions.push_back(pos[mask[i]][2]);
-        }
-    }
+
     if (usePeriodic) {
         Vec3 box[3];
         cu.getPeriodicBoxVectors(box[0], box[1], box[2]);
-        if (doubleModel) {
-            vector<double> boxVectors;
-            for (int i = 0; i < 3; i++)
-                for (int j = 0; j < 3; j++)
-                    boxVectors.push_back(box[i][j]);
-        }
-        else {
-            vector<float> boxVectors;
-            for (int i = 0; i < 3; i++)
-                for (int j = 0; j < 3; j++)
-                    boxVectors.push_back(box[i][j]);
-        }
+        vector<VALUETYPE> boxVectors;
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+                boxVectors.push_back(box[i][j]);
     } else {
-        if (doubleModel){
-            vector<double> boxVectors(9,0.0);
-            boxVectors[0] = 9999.9;
-            boxVectors[4] = 9999.9;
-            boxVectors[8] = 9999.9;
-        } else {
-            vector<float> boxVectors(9,0.0);
-            boxVectors[0] = 9999.9;
-            boxVectors[4] = 9999.9;
-            boxVectors[8] = 9999.9;
-        }
+        vector<VALUETYPE> boxVectors(9,0.0);
+        boxVectors[0] = 9999.9;
+        boxVectors[4] = 9999.9;
+        boxVectors[8] = 9999.9;
     }
     
     // run model
-    if (doubleModel){
-        vector<double> force_tmp(positions.size()*3, 0);
-        vector<double> virial(9,0);
-        double ener = 0;
-        model.compute(ener, force_tmp, virial, positions, types, boxVectors);
-    } else {
-        vector<float> force_tmp(positions.size()*3,0);
-        vector<float> virial(9,0);
-        double ener = 0;
-        model.compute(ener, force_tmp, virial, positions, types, boxVectors);
-    }
+    vector<VALUETYPE> force_tmp(positions.size()*3, 0);
+    vector<VALUETYPE> virial(9,0);
+    ENERGYTYPE ener = 0;
+    deepmodel.compute(ener, force_tmp, virial, positions, types, boxVectors);
 
     double energy = 0.0;
     if (includeEnergy) {
