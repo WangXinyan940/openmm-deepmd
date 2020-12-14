@@ -4,6 +4,7 @@
 %import(module="simtk.openmm") "swig/OpenMMSwigHeaders.i"
 %include "swig/typemaps.i"
 %include <std_string.i>
+%include <std_vector.i>
 
 %{
 #include "DeepMDForce.h"
@@ -34,6 +35,10 @@
         except Exception:
             self.this = this
 %}
+
+namespace std {
+  %template(IntVector) vector<int>;
+}
 
 namespace DeepMDPlugin {
 
