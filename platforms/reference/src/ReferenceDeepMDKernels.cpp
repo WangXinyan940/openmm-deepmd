@@ -91,12 +91,12 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
         vector<double> force_tmp(positions.size()*3, 0);
         vector<double> virial(9,0);
         double ener = 0;
-        model.compute(ener, force_tmp, virial, positions, types, boxVectors);
+        deepmodel.compute(ener, force_tmp, virial, positions, types, boxVectors);
     } else {
         vector<float> force_tmp(positions.size()*3,0);
         vector<float> virial(9,0);
         double ener = 0;
-        model.compute(ener, force_tmp, virial, positions, types, boxVectors);
+        deepmodel.compute(ener, force_tmp, virial, positions, types, boxVectors);
     }
 
 
