@@ -1,7 +1,7 @@
 #ifndef DEEPMD_KERNELS_H_
 #define DEEPMD_KERNELS_H_
 
-#include "DeePMDForce.h"
+#include "DeepMDForce.h"
 #include "openmm/KernelImpl.h"
 #include "openmm/Platform.h"
 #include "openmm/System.h"
