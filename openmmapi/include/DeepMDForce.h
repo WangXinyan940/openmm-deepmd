@@ -21,7 +21,7 @@ public:
      * @param filename   the path to the file containing the model
      * @param ifDouble   if use double precision in DeepMD model
      */
-    DeepMDForce(const std::string& filename, bool ifDouble);
+    DeepMDForce(std::string& filename, bool ifDouble);
     /**
      * Set mask for DeepMD force field. Only the index in mask vector would be
      * included in DeepMD model
