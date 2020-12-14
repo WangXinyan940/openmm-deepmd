@@ -11,7 +11,7 @@ using namespace std;
 DeepMDForce::DeepMDForce(std::string& filename, bool ifDouble) : dpfile(filename), usePeriodic(false), useDouble(ifDouble) {
 }
 
-void setFile(std::string& filename) {
+void setFile(std::string filename) {
     dpfile = filename;
 }
 
