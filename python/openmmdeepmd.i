@@ -39,7 +39,7 @@ namespace DeepMDPlugin {
 
 class DeepMDForce : public OpenMM::Force {
 public:
-    DeepMDForce(const std::string file);
+    DeepMDForce(const std::string& file);
     const std::string& getFile() const;
     void setMask(std::vector<int> mask);
     const std::vector<int>& getMask() const;

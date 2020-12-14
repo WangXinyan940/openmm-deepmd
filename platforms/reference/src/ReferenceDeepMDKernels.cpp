@@ -42,7 +42,6 @@ void ReferenceCalcDeepMDForceKernel::initialize(const System& system, const Deep
     // create input tensors
     mask = force.getMask();
     types = force.getType();
-    doubleModel = force.useDoublePrecision();
     usePeriodic = force.usesPeriodicBoundaryConditions();
 }
 
