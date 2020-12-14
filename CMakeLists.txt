@@ -14,6 +14,11 @@ SET(DEEPMD_DIR "/usr/local" CACHE PATH "Where DeepMD is installed")
 INCLUDE_DIRECTORIES("${DEEPMD_DIR}/include/deepmd")
 LINK_DIRECTORIES("${DEEPMD_DIR}/lib")
 
+# We need to know where tensorflow is installed so we can access the headers and libraries.
+SET(TENSORFLOW_DIR "/usr/local" CACHE PATH "Where Tensorflow is installed")
+INCLUDE_DIRECTORIES("${TENSORFLOW_DIR}/include")
+LINK_DIRECTORIES("${TENSORFLOW_DIR}/lib")
+
 # Specify the C++ version we are building for.
 SET (CMAKE_CXX_STANDARD 11)
 
