@@ -1,12 +1,11 @@
 #ifndef DEEPMD_KERNELS_H_
 #define DEEPMD_KERNELS_H_
 
-#include "DEEPMDForce.h"
+#include "DeePMDForce.h"
 #include "openmm/KernelImpl.h"
 #include "openmm/Platform.h"
 #include "openmm/System.h"
 #include "NNPInter.h"
-#include <c_api.h>
 #include <string>
 
 namespace DeepMDPlugin {
