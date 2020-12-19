@@ -89,6 +89,7 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
         cout << boxVectors[i] << ", ";
     }
     cout << endl;
+    deepmodel.print_summary("   ");
     deepmodel.compute(ener, force_tmp, virial, positions, types, boxVectors);
     cout << "Finished." << endl;
     cout << "force_tmp:" << endl;
