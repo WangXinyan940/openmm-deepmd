@@ -17,11 +17,11 @@ typedef float VALUETYPE2;
 CudaCalcDeepMDForceKernel::~CudaCalcDeepMDForceKernel() {
 }
 
-void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDForce& force, NNPInter* model) {
+void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDForce& force, NNPInter& model) {
     
     int numParticles = system.getNumParticles();
     // hold model
-    this->deepmodel = model;
+    deepmodel = model;
 
     // create input tensors
     mask = force.getMask();
@@ -80,7 +80,7 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
     // cout << "box size:    " << boxVectors.size() << "    ";
     // cout << "types size:  " << types.size()      << "    ";
     // cout << "forces size: " << force_tmp.size()  << endl;
-    deepmodel->compute(ener, force_tmp, virial, positions, types, boxVectors);
+    deepmodel.compute(ener, force_tmp, virial, positions, types, boxVectors);
     // cout << "Model finished" << endl;
 
     double energy = 0.0;

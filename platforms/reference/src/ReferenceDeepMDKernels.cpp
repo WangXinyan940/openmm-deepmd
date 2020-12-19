@@ -32,10 +32,10 @@ static Vec3* extractBoxVectors(ContextImpl& context) {
 ReferenceCalcDeepMDForceKernel::~ReferenceCalcDeepMDForceKernel() {
 }
 
-void ReferenceCalcDeepMDForceKernel::initialize(const System& system, const DeepMDForce& force, NNPInter* model) {
+void ReferenceCalcDeepMDForceKernel::initialize(const System& system, const DeepMDForce& force, NNPInter& model) {
     int numParticles = system.getNumParticles();
     // hold model
-    this->deepmodel = model;
+    deepmodel = model;
 #ifdef HIGH_PREC
     cout << "HIGH PREC" << endl;
 #else
@@ -89,7 +89,7 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
         cout << boxVectors[i] << ", ";
     }
     cout << endl;
-    deepmodel->compute(ener, force_tmp, virial, positions, types, boxVectors);
+    deepmodel.compute(ener, force_tmp, virial, positions, types, boxVectors);
 
     double energy = 0.0;
     if (includeEnergy) {

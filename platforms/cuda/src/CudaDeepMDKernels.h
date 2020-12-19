@@ -7,6 +7,7 @@
 #include "openmm/cuda/CudaContext.h"
 #include "openmm/cuda/CudaArray.h"
 #include <vector>
+#include <string>
 
 namespace DeepMDPlugin {
 
@@ -26,7 +27,7 @@ public:
      * @param force          the DeepMDForce this kernel will be used for
      * @param model          the DeepMD-kit model
      */
-    void initialize(const OpenMM::System& system, const DeepMDForce& force, NNPInter* model);
+    void initialize(const OpenMM::System& system, const DeepMDForce& force, NNPInter& model);
     /**
      * Execute the kernel to calculate the forces and/or energy.
      *
@@ -37,10 +38,9 @@ public:
      */
     double execute(OpenMM::ContextImpl& context, bool includeForces, bool includeEnergy);
 private:
-    NNPInter* deepmodel;
+    NNPInter deepmodel;
     std::vector<int> mask;
     std::vector<int> types;
-    bool doubleModel;
     bool hasInitializedKernel;
     OpenMM::CudaContext& cu;
     bool usePeriodic;
