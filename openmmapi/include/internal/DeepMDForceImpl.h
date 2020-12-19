@@ -67,7 +67,7 @@ public:
 private:
     const DeepMDForce& owner;
     OpenMM::Kernel kernel;
-    NNPInter model;
+    NNPInter* model;
 };
 
 } // namespace DeepMDPlugin

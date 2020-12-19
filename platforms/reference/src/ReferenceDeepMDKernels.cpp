@@ -34,10 +34,10 @@ static Vec3* extractBoxVectors(ContextImpl& context) {
 ReferenceCalcDeepMDForceKernel::~ReferenceCalcDeepMDForceKernel() {
 }
 
-void ReferenceCalcDeepMDForceKernel::initialize(const System& system, const DeepMDForce& force, const NNPInter& model) {
+void ReferenceCalcDeepMDForceKernel::initialize(const System& system, const DeepMDForce& force, NNPInter* model) {
     int numParticles = system.getNumParticles();
     // hold model
-    NNPInter deepmodel = model;
+    this->deepmodel = model;
 
     // create input tensors
     mask = force.getMask();

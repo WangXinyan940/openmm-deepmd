@@ -27,7 +27,7 @@ public:
      * @param force          the DeepMDForce this kernel will be used for
      * @param model          the DeepMD-kit model
      */
-    virtual void initialize(const OpenMM::System& system, const DeepMDForce& force, const NNPInter& model) = 0;
+    virtual void initialize(const OpenMM::System& system, const DeepMDForce& force, NNPInter* model) = 0;
     /**
      * Execute the kernel to calculate the forces and/or energy.
      *

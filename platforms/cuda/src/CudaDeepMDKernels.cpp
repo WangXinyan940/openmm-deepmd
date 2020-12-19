@@ -19,11 +19,11 @@ typedef double ENERGYTYPE;
 CudaCalcDeepMDForceKernel::~CudaCalcDeepMDForceKernel() {
 }
 
-void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDForce& force, const NNPInter& model) {
+void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDForce& force, NNPInter* model) {
     
     int numParticles = system.getNumParticles();
     // hold model
-    NNPInter deepmodel = model;
+    this->deepmodel = model;
 
     // create input tensors
     mask = force.getMask();
