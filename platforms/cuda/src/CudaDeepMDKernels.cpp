@@ -21,7 +21,8 @@ void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDFor
     
     int numParticles = system.getNumParticles();
     // hold model
-    NNPInter deepmodel(force.getFile());
+    NNPInter model(force.getFile());
+    deepmodel = model;
 
     // create input tensors
     mask = force.getMask();
