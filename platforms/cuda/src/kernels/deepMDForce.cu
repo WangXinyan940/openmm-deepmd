@@ -1,2 +1,2 @@
-extern "C" __global__ void addForces {
+extern "C" __global__ void addForces() {
 }
