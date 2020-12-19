@@ -90,7 +90,12 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
     }
     cout << endl;
     deepmodel.compute(ener, force_tmp, virial, positions, types, boxVectors);
-
+    cout << "Finished." << endl;
+    cout << "force_tmp:" << endl;
+    for(int i=0;i<force_tmp.size();i++){
+        cout << force_tmp[i] << ", ";
+    }
+    cout << endl;
     double energy = 0.0;
     if (includeEnergy) {
         energy = ener * 96.0;
