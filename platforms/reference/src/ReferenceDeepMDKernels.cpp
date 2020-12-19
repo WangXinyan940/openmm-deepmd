@@ -90,6 +90,7 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
     }
     cout << endl;
     deepmodel.print_summary("   ");
+    cout << "DFP:" << deepmodel.dim_fparam() << "   DAP:" << deepmodel.dim_aparam() << endl;
     deepmodel.compute(ener, force_tmp, virial, positions, types, boxVectors);
     cout << "Finished." << endl;
     cout << "force_tmp:" << endl;
