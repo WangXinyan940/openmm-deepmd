@@ -1,6 +1,6 @@
 #include "internal/DeepMDForceImpl.h"
 #include "DeepMDKernels.h"
-#include "NNPInter.h"
+#include "deepmd/NNPInter.h"
 #include "openmm/OpenMMException.h"
 #include "openmm/internal/ContextImpl.h"
 

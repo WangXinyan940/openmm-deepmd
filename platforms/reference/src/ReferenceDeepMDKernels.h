@@ -1,7 +1,7 @@
 #ifndef REFERENCE_DEEPMD_KERNELS_H_
 #define REFERENCE_DEEPMD_KERNELS_H_
 
-#include "NNPInter.h"
+#include "deepmd/NNPInter.h"
 #include "DeepMDKernels.h"
 #include "openmm/Platform.h"
 #include <vector>

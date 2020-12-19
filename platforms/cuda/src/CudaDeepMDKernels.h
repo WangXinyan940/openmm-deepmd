@@ -2,7 +2,7 @@
 #ifndef CUDA_DEEPMD_KERNELS_H_
 #define CUDA_DEEPMD_KERNELS_H_
 
-#include "NNPInter.h"
+#include "deepmd/NNPInter.h"
 #include "DeepMDKernels.h"
 #include "openmm/cuda/CudaContext.h"
 #include "openmm/cuda/CudaArray.h"
