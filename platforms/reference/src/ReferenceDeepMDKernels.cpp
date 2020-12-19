@@ -64,9 +64,9 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
                 boxVectors.push_back(box[i][j]*10);
     } else {
         vector<VALUETYPE> boxVectors(9,0.0);
-        boxVectors[0] = 99999.9;
-        boxVectors[4] = 99999.9;
-        boxVectors[8] = 99999.9;
+        boxVectors[0] = 9999.9;
+        boxVectors[4] = 9999.9;
+        boxVectors[8] = 9999.9;
     }
 
     // run model

@@ -37,8 +37,8 @@ void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDFor
         networkForces.initialize(cu, 3*numParticles, sizeof(double), "networkForces");
     #else
         cout << "Low Prec" << endl;
-        defines["FORCES_TYPE"] = "double";
-        networkForces.initialize(cu, 3*numParticles, sizeof(double), "networkForces");
+        defines["FORCES_TYPE"] = "float";
+        networkForces.initialize(cu, 3*numParticles, sizeof(float), "networkForces");
     #endif
     CUmodule module = cu.createModule(CudaDeepMDKernelSources::deepMDForce, defines);
     addForcesKernel = cu.getKernel(module, "addForces");
@@ -57,7 +57,7 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
         positions.push_back(pos[mask[i]][1]*10);
         positions.push_back(pos[mask[i]][2]*10);
     }
-    cout << "Position loaded" << endl;
+    // cout << "Position loaded" << endl;
 
     vector<VALUETYPE> boxVectors(9,0);
     if (usePeriodic) {
@@ -67,23 +67,23 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
             for (int j = 0; j < 3; j++)
                 boxVectors[i*3+j] = box[i][j]*10;
     } else {
-        boxVectors[0] = 99999.9;
-        boxVectors[4] = 99999.9;
-        boxVectors[8] = 99999.9;
+        boxVectors[0] = 9999.9;
+        boxVectors[4] = 9999.9;
+        boxVectors[8] = 9999.9;
     }
-    cout << "Box loaded" << endl;
+    // cout << "Box loaded" << endl;
     
     // run model
     vector<VALUETYPE> force_tmp(positions.size(), 0);
     vector<VALUETYPE> virial(9,0);
     ENERGYTYPE ener = 0;
-    cout << "pos size:    " << positions.size()  << "    ";
-    cout << "virial size: " << virial.size()     << "    ";
-    cout << "box size:    " << boxVectors.size() << "    ";
-    cout << "types size:  " << types.size()      << "    ";
-    cout << "forces size: " << force_tmp.size()  << endl;
+    // cout << "pos size:    " << positions.size()  << "    ";
+    // cout << "virial size: " << virial.size()     << "    ";
+    // cout << "box size:    " << boxVectors.size() << "    ";
+    // cout << "types size:  " << types.size()      << "    ";
+    // cout << "forces size: " << force_tmp.size()  << endl;
     deepmodel.compute(ener, force_tmp, virial, positions, types, boxVectors);
-    cout << "Model finished" << endl;
+    // cout << "Model finished" << endl;
 
     double energy = 0.0;
     if (includeEnergy) {
