@@ -11,7 +11,7 @@ LINK_DIRECTORIES("${OPENMM_DIR}/lib" "${OPENMM_DIR}/lib/plugins")
 
 # We need to know where DeepMD is installed so we can access the headers and libraries.
 SET(DEEPMD_DIR "/usr/local" CACHE PATH "Where DeepMD is installed")
-INCLUDE_DIRECTORIES("${DEEPMD_DIR}/include/deepmd")
+INCLUDE_DIRECTORIES("${DEEPMD_DIR}/include")
 LINK_DIRECTORIES("${DEEPMD_DIR}/lib")
 
 # We need to know where tensorflow is installed so we can access the headers and libraries.
