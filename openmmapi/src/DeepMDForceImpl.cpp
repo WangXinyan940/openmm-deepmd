@@ -17,11 +17,10 @@ DeepMDForceImpl::~DeepMDForceImpl() {
 void DeepMDForceImpl::initialize(ContextImpl& context) {
     // Load deepmd-kit model from the file.
     NNPInter model(owner.getFile());
-    dpmodel = &model;
 
     // Create the kernel.
     kernel = context.getPlatform().createKernel(CalcDeepMDForceKernel::Name(), context);
-    kernel.getAs<CalcDeepMDForceKernel>().initialize(context.getSystem(), owner, dpmodel);
+    kernel.getAs<CalcDeepMDForceKernel>().initialize(context.getSystem(), owner, &model);
 }
 
 double DeepMDForceImpl::calcForcesAndEnergy(ContextImpl& context, bool includeForces, bool includeEnergy, int groups) {
