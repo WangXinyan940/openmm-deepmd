@@ -73,7 +73,7 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
     vector<VALUETYPE> force_tmp(positions.size()*3,0);
     vector<VALUETYPE> virial(9,0);
     ENERGYTYPE ener = 0;
-    deepmodel.compute(ener, force_tmp, virial, positions, types, boxVectors);
+    deepmodel->compute(ener, force_tmp, virial, positions, types, boxVectors);
 
     double energy = 0.0;
     if (includeEnergy) {

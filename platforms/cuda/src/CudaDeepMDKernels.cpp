@@ -82,7 +82,7 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
     // cout << "box size:    " << boxVectors.size() << "    ";
     // cout << "types size:  " << types.size()      << "    ";
     // cout << "forces size: " << force_tmp.size()  << endl;
-    deepmodel.compute(ener, force_tmp, virial, positions, types, boxVectors);
+    deepmodel->compute(ener, force_tmp, virial, positions, types, boxVectors);
     // cout << "Model finished" << endl;
 
     double energy = 0.0;
