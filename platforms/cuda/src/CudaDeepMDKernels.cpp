@@ -40,7 +40,7 @@ void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDFor
         networkForces.initialize(cu, 3*numParticles, sizeof(float), "networkForces");
     #endif
     CUmodule module = cu.createModule(CudaDeepMDKernelSources::deepMDForce, defines);
-    addForcesKernel = cu.getKernel(module, "addForces");
+    addForcesKernel = cu.getKernel(module, "addForces25");
 }
 
 double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForces, bool includeEnergy) {
@@ -103,8 +103,7 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
         cout << "After upload" << endl;
         int paddedNumAtoms = cu.getPaddedNumAtoms();
         cout << numParticles << "   " << paddedNumAtoms << endl;
-        // void* args[] = {&networkForces.getDevicePointer(), &cu.getForce().getDevicePointer(), &cu.getAtomIndexArray().getDevicePointer(), &numParticles, &paddedNumAtoms};
-        void* args[] = {};
+        void* args[] = {&networkForces.getDevicePointer(), &cu.getForce().getDevicePointer(), &cu.getAtomIndexArray().getDevicePointer(), &numParticles, &paddedNumAtoms};
         cu.executeKernel(addForcesKernel, args, numParticles);
     }
     return energy;
