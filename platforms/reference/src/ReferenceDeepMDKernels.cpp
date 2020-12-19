@@ -6,10 +6,8 @@
 
 #ifdef HIGH_PREC
 typedef double VALUETYPE;
-typedef double ENERGYTYPE;
 #else
 typedef float VALUETYPE;
-typedef double ENERGYTYPE;
 #endif
 
 using namespace DeepMDPlugin;
@@ -72,7 +70,7 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
     // run model
     vector<VALUETYPE> force_tmp(positions.size()*3,0);
     vector<VALUETYPE> virial(9,0);
-    ENERGYTYPE ener = 0;
+    double ener = 0;
     deepmodel->compute(ener, force_tmp, virial, positions, types, boxVectors);
 
     double energy = 0.0;
