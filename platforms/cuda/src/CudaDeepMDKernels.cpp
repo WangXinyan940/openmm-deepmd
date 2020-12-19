@@ -99,7 +99,7 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
         // }
         // networkForces.upload(data);
         cout << "Before upload" << endl;
-        networkForces.upload(force_tmp);
+        networkForces.upload(&force_tmp[0]);
         cout << "After upload" << endl;
         int paddedNumAtoms = cu.getPaddedNumAtoms();
         cout << numParticles << "   " << paddedNumAtoms << endl;
