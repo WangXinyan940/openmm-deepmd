@@ -21,9 +21,8 @@ public:
      * 
      * @param system         the System this kernel will be applied to
      * @param force          the DeepMDForce this kernel will be used for
-     * @param model          the DeepMD-kit model
      */
-    void initialize(const OpenMM::System& system, const DeepMDForce& force, NNPInter* model);
+    void initialize(const OpenMM::System& system, const DeepMDForce& force);
     /**
      * Execute the kernel to calculate the forces and/or energy.
      *

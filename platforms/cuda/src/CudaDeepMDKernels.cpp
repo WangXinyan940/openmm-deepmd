@@ -17,11 +17,11 @@ typedef float VALUETYPE2;
 CudaCalcDeepMDForceKernel::~CudaCalcDeepMDForceKernel() {
 }
 
-void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDForce& force, NNPInter& model) {
+void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDForce& force) {
     
     int numParticles = system.getNumParticles();
     // hold model
-    deepmodel = model;
+    NNPInter deepmodel(force.getFile());
 
     // create input tensors
     mask = force.getMask();
