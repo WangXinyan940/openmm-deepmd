@@ -40,7 +40,7 @@ void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDFor
         networkForces.initialize(cu, 3*numParticles, sizeof(float), "networkForces");
     #endif
     CUmodule module = cu.createModule(CudaDeepMDKernelSources::deepMDForce, defines);
-    addForcesKernel = cu.getKernel(module, "addForces25");
+    addForcesKernel = cu.getKernel(module, "addForces");
 }
 
 double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForces, bool includeEnergy) {
