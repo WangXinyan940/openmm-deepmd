@@ -11,7 +11,7 @@ deepmd_lib_header_dir = '@DEEPMD_DIR@/include'
 deepmd_lib_library_dir = '@DEEPMD_DIR@/lib'
 
 # setup extra compile and link arguments on Mac
-extra_compile_args = ['-std=c++11']
+extra_compile_args = ['-std=c++11', '-DHIGH_PREC']
 extra_link_args = ['-ldeepmd', '-ldeepmd_op']
 
 if platform.system() == 'Darwin':
