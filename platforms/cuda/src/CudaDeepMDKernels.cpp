@@ -49,11 +49,11 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
 
     cout << "Goes in" << endl;
     
-    vector<VALUETYPE2> positions;
+    vector<VALUETYPE2> positions(3*mask.size(),0.0);
     for (int i = 0; i < mask.size(); i++) {
-        positions[i] = pos[mask[i]][0]*10;
-        positions[i] = pos[mask[i]][1]*10;
-        positions[i] = pos[mask[i]][2]*10;
+        positions[3*i] = pos[mask[i]][0]*10;
+        positions[3*i+1] = pos[mask[i]][1]*10;
+        positions[3*i+2] = pos[mask[i]][2]*10;
     }
     // cout << "Position loaded" << endl;
 

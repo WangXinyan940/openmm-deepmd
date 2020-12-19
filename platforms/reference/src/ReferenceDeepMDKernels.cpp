@@ -36,7 +36,11 @@ void ReferenceCalcDeepMDForceKernel::initialize(const System& system, const Deep
     int numParticles = system.getNumParticles();
     // hold model
     this->deepmodel = model;
-
+#ifdef HIGH_PREC
+    cout << "HIGH PREC" << endl;
+#else
+    cout << "LOW PREC" << endl;
+#endif
     // create input tensors
     mask = force.getMask();
     types = force.getType();
@@ -48,11 +52,11 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
     vector<Vec3>& force = extractForces(context);
     int numParticles = pos.size();
 
-    vector<VALUETYPE2> positions(mask.size(),0.0);
+    vector<VALUETYPE2> positions(mask.size()*3,0.0);
     for (int i = 0; i < mask.size(); i++) {
-        positions[i] = pos[mask[i]][0]*10;
-        positions[i] = pos[mask[i]][1]*10;
-        positions[i] = pos[mask[i]][2]*10;
+        positions[3*i] = pos[mask[i]][0]*10;
+        positions[3*i+1] = pos[mask[i]][1]*10;
+        positions[3*i+2] = pos[mask[i]][2]*10;
     }
     if (usePeriodic) {
         Vec3* box = extractBoxVectors(context);
@@ -68,7 +72,7 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
     }
 
     // run model
-    vector<VALUETYPE2> force_tmp(positions.size()*3,0);
+    vector<VALUETYPE2> force_tmp(positions.size(),0);
     vector<VALUETYPE2> virial(9,0);
     double ener = 0;
     deepmodel->compute(ener, force_tmp, virial, positions, types, boxVectors);
