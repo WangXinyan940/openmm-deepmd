@@ -5,9 +5,9 @@
 #include "openmm/reference/ReferencePlatform.h"
 
 #ifdef HIGH_PREC
-typedef double VALUETYPE;
+typedef double VALUETYPE2;
 #else
-typedef float VALUETYPE;
+typedef float VALUETYPE2;
 #endif
 
 using namespace DeepMDPlugin;
@@ -48,7 +48,7 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
     vector<Vec3>& force = extractForces(context);
     int numParticles = pos.size();
 
-    vector<VALUETYPE> positions;
+    vector<VALUETYPE2> positions;
     for (int i = 0; i < mask.size(); i++) {
         positions.push_back(pos[mask[i]][0]*10);
         positions.push_back(pos[mask[i]][1]*10);
@@ -56,20 +56,20 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
     }
     if (usePeriodic) {
         Vec3* box = extractBoxVectors(context);
-        vector<VALUETYPE> boxVectors;
+        vector<VALUETYPE2> boxVectors;
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 3; j++)
                 boxVectors.push_back(box[i][j]*10);
     } else {
-        vector<VALUETYPE> boxVectors(9,0.0);
+        vector<VALUETYPE2> boxVectors(9,0.0);
         boxVectors[0] = 9999.9;
         boxVectors[4] = 9999.9;
         boxVectors[8] = 9999.9;
     }
 
     // run model
-    vector<VALUETYPE> force_tmp(positions.size()*3,0);
-    vector<VALUETYPE> virial(9,0);
+    vector<VALUETYPE2> force_tmp(positions.size()*3,0);
+    vector<VALUETYPE2> virial(9,0);
     double ener = 0;
     deepmodel->compute(ener, force_tmp, virial, positions, types, boxVectors);
 
