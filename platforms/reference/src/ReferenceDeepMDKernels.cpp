@@ -48,18 +48,18 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
     vector<Vec3>& force = extractForces(context);
     int numParticles = pos.size();
 
-    vector<VALUETYPE2> positions;
+    vector<VALUETYPE2> positions(mask.size(),0.0);
     for (int i = 0; i < mask.size(); i++) {
-        positions.push_back(pos[mask[i]][0]*10);
-        positions.push_back(pos[mask[i]][1]*10);
-        positions.push_back(pos[mask[i]][2]*10);
+        positions[i] = pos[mask[i]][0]*10;
+        positions[i] = pos[mask[i]][1]*10;
+        positions[i] = pos[mask[i]][2]*10;
     }
     if (usePeriodic) {
         Vec3* box = extractBoxVectors(context);
-        vector<VALUETYPE2> boxVectors;
+        vector<VALUETYPE2> boxVectors(9,0.0);
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 3; j++)
-                boxVectors.push_back(box[i][j]*10);
+                boxVectors[3*i+j] = box[i][j]*10;
     } else {
         vector<VALUETYPE2> boxVectors(9,0.0);
         boxVectors[0] = 9999.9;
