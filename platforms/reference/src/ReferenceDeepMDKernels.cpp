@@ -58,14 +58,13 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
         positions[3*i+1] = pos[mask[i]][1]*10;
         positions[3*i+2] = pos[mask[i]][2]*10;
     }
+    vector<VALUETYPE2> boxVectors(9,0.0);
     if (usePeriodic) {
         Vec3* box = extractBoxVectors(context);
-        vector<VALUETYPE2> boxVectors(9,0.0);
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 3; j++)
                 boxVectors[3*i+j] = box[i][j]*10;
     } else {
-        vector<VALUETYPE2> boxVectors(9,0.0);
         boxVectors[0] = 9999.9;
         boxVectors[4] = 9999.9;
         boxVectors[8] = 9999.9;
