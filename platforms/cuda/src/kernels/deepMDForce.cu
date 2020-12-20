@@ -8,5 +8,4 @@ extern "C" __global__ void addForces(const FORCES_TYPE* __restrict__ forces, lon
 }
 
 extern "C" __global__ void testForces(int inpi, int inpj){
-    printf("i: %d   j: %d\n", inpi, inpj);
 }

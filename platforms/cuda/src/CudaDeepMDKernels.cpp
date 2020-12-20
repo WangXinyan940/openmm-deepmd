@@ -78,11 +78,6 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
     vector<VALUETYPE2> force_tmp(positions.size(), 0);
     vector<VALUETYPE2> virial(9,0);
     double ener = 0;
-    // cout << "pos size:    " << positions.size()  << "    ";
-    // cout << "virial size: " << virial.size()     << "    ";
-    // cout << "box size:    " << boxVectors.size() << "    ";
-    // cout << "types size:  " << types.size()      << "    ";
-    // cout << "forces size: " << force_tmp.size()  << endl;
     cout << "Before run" << endl;
     deepmodel.compute(ener, force_tmp, virial, positions, types, boxVectors);
     cout << "Model finished" << endl;
@@ -107,7 +102,7 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
         int testi = 1;
         int testj = 2;
         void* argtest[] = {&testi, &testj};
-        // cu.executeKernel(testKernel, argtest, 10);
+        cu.executeKernel(testKernel, argtest, 10);
         void* args[] = {&networkForces.getDevicePointer(), &cu.getForce().getDevicePointer(), &cu.getAtomIndexArray().getDevicePointer(), &numParticles, &paddedNumAtoms};
         // cu.executeKernel(addForcesKernel, args, numParticles);
     }
