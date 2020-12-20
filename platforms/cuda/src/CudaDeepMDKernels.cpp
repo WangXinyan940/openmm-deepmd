@@ -18,6 +18,7 @@ CudaCalcDeepMDForceKernel::~CudaCalcDeepMDForceKernel() {
 }
 
 void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDForce& force) {
+    cu.setAsCurrent();
     
     int numParticles = system.getNumParticles();
     // hold model
