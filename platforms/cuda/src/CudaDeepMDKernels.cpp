@@ -67,7 +67,7 @@ void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDFor
 }
 
 double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForces, bool includeEnergy) {
-    cu.setAsCurrent();
+    
     vector<Vec3> pos;
     context.getPositions(pos);
     int numParticles = cu.getNumAtoms();
@@ -109,6 +109,7 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
         energy = ener*96;
     }
     if (includeForces) {
+        cu.setAsCurrent();
         cout << "Before upload" << endl;
         vector<VALUETYPE> data(3*pos.size(),0);
         for(int i=0;i<mask.size();i++){
