@@ -19,7 +19,7 @@ CudaCalcDeepMDForceKernel::~CudaCalcDeepMDForceKernel() {
 
 void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDForce& force) {
     cu.setAsCurrent();
-    
+
     int numParticles = system.getNumParticles();
     // hold model
     NNPInter model(force.getFile());
@@ -116,6 +116,7 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
         inpj.upload(testj);
         inpk.upload(testk);
         void* argtest[] = {&inpi.getDevicePointer(), &inpj.getDevicePointer(), &inpk.getDevicePointer()};
+        cout << "before send" << endl;
         cu.executeKernel(testKernel, argtest, 10);
 
         void* args[] = {&networkForces.getDevicePointer(), &cu.getForce().getDevicePointer(), &cu.getAtomIndexArray().getDevicePointer(), &numParticles, &paddedNumAtoms};
