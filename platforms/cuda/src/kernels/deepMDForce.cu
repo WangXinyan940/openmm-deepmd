@@ -9,5 +9,8 @@ void addForces(const FORCES_TYPE* __restrict__ forces, long long* __restrict__ f
 }
 
 extern "C" __global__ 
-void testForces(int inpi, int inpj){
+void testForces(float* inpi, float* inpj, float* inpk){
+    for (int atom = blockIdx.x*blockDim.x+threadIdx.x; atom < 50; atom += blockDim.x*gridDim.x) {
+        inpk[atom] = inpi[atom] * inpj[atom];
+    }
 }
