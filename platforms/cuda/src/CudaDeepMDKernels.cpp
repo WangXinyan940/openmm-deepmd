@@ -92,16 +92,15 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
         energy = ener*96;
     }
     if (includeForces) {
-        // vector<VALUETYPE> data(3*pos.size(),0);
-        // for(int i=0;i<mask.size();i++){
-        //     int p = mask[i];
-        //     for(int j=0;j<3;j++){
-        //         data[3*p+j] = force_tmp[3*i+j];
-        //     }
-        // }
-        // networkForces.upload(data);
         cout << "Before upload" << endl;
-        networkForces.upload(&force_tmp[0]);
+        vector<VALUETYPE> data(3*pos.size(),0);
+        for(int i=0;i<mask.size();i++){
+            int p = mask[i];
+            for(int j=0;j<3;j++){
+                data[3*p+j] = force_tmp[3*i+j];
+            }
+        }
+        networkForces.upload(data);
         cout << "After upload" << endl;
         int paddedNumAtoms = cu.getPaddedNumAtoms();
         cout << numParticles << "   " << paddedNumAtoms << endl;
