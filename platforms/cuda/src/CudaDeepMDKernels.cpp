@@ -58,7 +58,7 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
         positions[3*i+1] = pos[mask[i]][1]*10;
         positions[3*i+2] = pos[mask[i]][2]*10;
     }
-    cout << "Position loaded" << endl;
+    // cout << "Position loaded" << endl;
 
     vector<VALUETYPE2> boxVectors(9,0);
     if (usePeriodic) {
@@ -72,14 +72,14 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
         boxVectors[4] = 9999.9;
         boxVectors[8] = 9999.9;
     }
-    cout << "Box loaded" << endl;
+    // cout << "Box loaded" << endl;
     
     // run model
     vector<VALUETYPE2> force_tmp(positions.size(), 0);
     vector<VALUETYPE2> virial(9,0);
     double ener = 0;
     deepmodel.compute(ener, force_tmp, virial, positions, types, boxVectors);
-    cout << "Got result" << endl;
+    // cout << "Got result" << endl;
 
     double energy = 0.0;
     if (includeEnergy) {
