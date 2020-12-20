@@ -34,12 +34,13 @@ void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDFor
     #ifdef HIGH_PREC
         cout << "High Prec" << endl;
         defines["FORCES_TYPE"] = "double";
-        networkForces.initialize(cu, 3*numParticles, sizeof(double), "networkForces");
+        int networkForcesSize = sizeof(double);
     #else
         cout << "Low Prec" << endl;
         defines["FORCES_TYPE"] = "float";
-        networkForces.initialize(cu, 3*numParticles, sizeof(float), "networkForces");
+        int networkForcesSize = sizeof(float);
     #endif
+    networkForces.initialize(cu, 3*numParticles, networkForcesSize, "networkForces");
     module = cu.createModule(CudaDeepMDKernelSources::deepMDForce, defines);
     cout << CudaDeepMDKernelSources::deepMDForce << endl;
     addForcesKernel = cu.getKernel(module, "addForces");
@@ -68,25 +69,25 @@ void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDFor
 
 double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForces, bool includeEnergy) {
 
-    vector<float> testi;
-    vector<float> testj;
-    vector<float> testk(50,0);
+    vector<float> testi2;
+    vector<float> testj2;
+    vector<float> testk2(50,0);
     for(int i=0;i<50;i++){
-        testi.push_back(i+1);
-        testj.push_back(3*i-1);
+        testi2.push_back(i+1);
+        testj2.push_back(3*i-1);
     }
     CudaArray inpi, inpj, inpk;
-    inpi.initialize(cu, 50, sizeof(float), "inpi");
-    inpj.initialize(cu, 50, sizeof(float), "inpj");
-    inpk.initialize(cu, 50, sizeof(float), "inpk");
-    inpi.upload(testi);
-    inpj.upload(testj);
-    inpk.upload(testk);
-    void* argtest[] = {&inpi.getDevicePointer(), &inpj.getDevicePointer(), &inpk.getDevicePointer()};
+    inpi2.initialize(cu, 50, sizeof(float), "inpi2");
+    inpj2.initialize(cu, 50, sizeof(float), "inpj2");
+    inpk2.initialize(cu, 50, sizeof(float), "inpk2");
+    inpi2.upload(testi2);
+    inpj2.upload(testj2);
+    inpk2.upload(testk2);
+    void* argtest2[] = {&inpi2.getDevicePointer(), &inpj2.getDevicePointer(), &inpk2.getDevicePointer()};
     cout << "before send in execute1" << endl;
     cu.executeKernel(testKernel, argtest, 10);
-    inpk.download(testk);
-    cout << testk[0] << " " << testk[10] << endl;
+    inpk2.download(testk2);
+    cout << testk2[0] << " " << testk2[10] << endl;
     
     vector<Vec3> pos;
     context.getPositions(pos);
@@ -142,25 +143,25 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
         int paddedNumAtoms = cu.getPaddedNumAtoms();
         cout << numParticles << "   " << paddedNumAtoms << endl;
 
-        vector<float> testi2;
-        vector<float> testj2;
-        vector<float> testk2(50,0);
+        vector<float> testi3;
+        vector<float> testj3;
+        vector<float> testk3(50,0);
         for(int i=0;i<50;i++){
-            testi2.push_back(i+1);
-            testj2.push_back(3*i-1);
+            testi3.push_back(i+1);
+            testj3.push_back(3*i-1);
         }
-        CudaArray inpi2, inpj2, inpk2;
-        inpi2.initialize(cu, 50, sizeof(float), "inpi");
-        inpj2.initialize(cu, 50, sizeof(float), "inpj");
-        inpk2.initialize(cu, 50, sizeof(float), "inpk");
-        inpi2.upload(testi2);
-        inpj2.upload(testj2);
-        inpk2.upload(testk2);
-        void* argtest2[] = {&inpi2.getDevicePointer(), &inpj2.getDevicePointer(), &inpk2.getDevicePointer()};
+        CudaArray inpi3, inpj3, inpk3;
+        inpi3.initialize(cu, 50, sizeof(float), "inpi3");
+        inpj3.initialize(cu, 50, sizeof(float), "inpj3");
+        inpk3.initialize(cu, 50, sizeof(float), "inpk3");
+        inpi3.upload(testi3);
+        inpj3.upload(testj3);
+        inpk3.upload(testk3);
+        void* argtest3[] = {&inpi3.getDevicePointer(), &inpj3.getDevicePointer(), &inpk3.getDevicePointer()};
         cout << "before send in execute2" << endl;
-        cu.executeKernel(testKernel, argtest2, 10);
-        inpk2.download(testk2);
-        cout << testk2[0] << " " << testk2[10] << endl;
+        cu.executeKernel(testKernel, argtest3, 10);
+        inpk3.download(testk3);
+        cout << testk3[0] << " " << testk3[10] << endl;
 
         void* args[] = {&networkForces.getDevicePointer(), &cu.getForce().getDevicePointer(), &cu.getAtomIndexArray().getDevicePointer(), &numParticles, &paddedNumAtoms};
         cu.executeKernel(addForcesKernel, args, numParticles);
