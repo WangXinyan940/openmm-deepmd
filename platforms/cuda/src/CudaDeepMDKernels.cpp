@@ -50,59 +50,59 @@ void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDFor
 
 double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForces, bool includeEnergy) {
     
-//    vector<Vec3> pos;
-//    context.getPositions(pos);
-//    int numParticles = cu.getNumAtoms();
-//
-//    cout << "Goes in" << endl;
-//    
-//    vector<VALUETYPE2> positions(3*mask.size(),0.0);
-//    for (int i = 0; i < mask.size(); i++) {
-//        positions[3*i] = pos[mask[i]][0]*10;
-//        positions[3*i+1] = pos[mask[i]][1]*10;
-//        positions[3*i+2] = pos[mask[i]][2]*10;
-//    }
-//    // cout << "Position loaded" << endl;
-//
-//    vector<VALUETYPE2> boxVectors(9,0);
-//    if (usePeriodic) {
-//        Vec3 box[3];
-//        cu.getPeriodicBoxVectors(box[0], box[1], box[2]);
-//        for (int i = 0; i < 3; i++)
-//            for (int j = 0; j < 3; j++)
-//                boxVectors[i*3+j] = box[i][j]*10;
-//    } else {
-//        boxVectors[0] = 9999.9;
-//        boxVectors[4] = 9999.9;
-//        boxVectors[8] = 9999.9;
-//    }
-//    // cout << "Box loaded" << endl;
-//    
-//    // run model
-//    vector<VALUETYPE2> force_tmp(positions.size(), 0);
-//    vector<VALUETYPE2> virial(9,0);
-//    double ener = 0;
-//    cout << "Before run" << endl;
-//    deepmodel.compute(ener, force_tmp, virial, positions, types, boxVectors);
-//    cout << "Model finished" << endl;
+    vector<Vec3> pos;
+    context.getPositions(pos);
+    int numParticles = cu.getNumAtoms();
+
+    cout << "Goes in" << endl;
+    
+    vector<VALUETYPE2> positions(3*mask.size(),0.0);
+    for (int i = 0; i < mask.size(); i++) {
+        positions[3*i] = pos[mask[i]][0]*10;
+        positions[3*i+1] = pos[mask[i]][1]*10;
+        positions[3*i+2] = pos[mask[i]][2]*10;
+    }
+    // cout << "Position loaded" << endl;
+
+    vector<VALUETYPE2> boxVectors(9,0);
+    if (usePeriodic) {
+        Vec3 box[3];
+        cu.getPeriodicBoxVectors(box[0], box[1], box[2]);
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+                boxVectors[i*3+j] = box[i][j]*10;
+    } else {
+        boxVectors[0] = 9999.9;
+        boxVectors[4] = 9999.9;
+        boxVectors[8] = 9999.9;
+    }
+    // cout << "Box loaded" << endl;
+    
+    // run model
+    vector<VALUETYPE2> force_tmp(positions.size(), 0);
+    vector<VALUETYPE2> virial(9,0);
+    double ener = 0;
+    cout << "Before run" << endl;
+    deepmodel.compute(ener, force_tmp, virial, positions, types, boxVectors);
+    cout << "Model finished" << endl;
 
     double energy = 0.0;
-//    if (includeEnergy) {
-//        energy = ener*96;
-//    }
+    if (includeEnergy) {
+        energy = ener*96;
+    }
     if (includeForces) {
-//        cout << "Before upload" << endl;
-//        vector<VALUETYPE> data(3*pos.size(),0);
-//        for(int i=0;i<mask.size();i++){
-//            int p = mask[i];
-//            for(int j=0;j<3;j++){
-//                data[3*p+j] = force_tmp[3*i+j];
-//            }
-//        }
-//        networkForces.upload(data);
-//        cout << "After upload" << endl;
-//        int paddedNumAtoms = cu.getPaddedNumAtoms();
-//        cout << numParticles << "   " << paddedNumAtoms << endl;
+        cout << "Before upload" << endl;
+        vector<VALUETYPE> data(3*pos.size(),0);
+        for(int i=0;i<mask.size();i++){
+            int p = mask[i];
+            for(int j=0;j<3;j++){
+                data[3*p+j] = force_tmp[3*i+j];
+            }
+        }
+        networkForces.upload(data);
+        cout << "After upload" << endl;
+        int paddedNumAtoms = cu.getPaddedNumAtoms();
+        cout << numParticles << "   " << paddedNumAtoms << endl;
 
         vector<float> testi3;
         vector<float> testj3;
@@ -124,8 +124,8 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
         inpk3.download(testk3);
         cout << testk3[0] << " " << testk3[10] << endl;
 
-//        void* args[] = {&networkForces.getDevicePointer(), &cu.getForce().getDevicePointer(), &cu.getAtomIndexArray().getDevicePointer(), &numParticles, &paddedNumAtoms};
-//        cu.executeKernel(addForcesKernel, args, numParticles);
+        void* args[] = {&networkForces.getDevicePointer(), &cu.getForce().getDevicePointer(), &cu.getAtomIndexArray().getDevicePointer(), &numParticles, &paddedNumAtoms};
+        cu.executeKernel(addForcesKernel, args, numParticles);
     }
     return energy;
 }
