@@ -77,7 +77,7 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
         testi2.push_back(i+1);
         testj2.push_back(3*i-1);
     }
-    CudaArray inpi, inpj, inpk;
+    CudaArray inpi2, inpj2, inpk2;
     inpi2.initialize(cu, 50, sizeof(float), "inpi2");
     inpj2.initialize(cu, 50, sizeof(float), "inpj2");
     inpk2.initialize(cu, 50, sizeof(float), "inpk2");
