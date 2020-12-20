@@ -69,6 +69,7 @@ void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDFor
 
 double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForces, bool includeEnergy) {
 
+    CUfunction testKernel2 = cu.getKernel(module, "testForces");
     vector<float> testi2;
     vector<float> testj2;
     vector<float> testk2(50,0);
@@ -85,7 +86,7 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
     inpk2.upload(testk2);
     void* argtest2[] = {&inpi2.getDevicePointer(), &inpj2.getDevicePointer(), &inpk2.getDevicePointer()};
     cout << "before send in execute1" << endl;
-    cu.executeKernel(testKernel, argtest, 10);
+    cu.executeKernel(testKernel2, argtest, 10);
     inpk2.download(testk2);
     cout << testk2[0] << " " << testk2[10] << endl;
     
