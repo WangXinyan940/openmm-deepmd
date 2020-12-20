@@ -111,9 +111,9 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
         inpi.initialize(cu, 50, sizeof(float), "inpi");
         inpj.initialize(cu, 50, sizeof(float), "inpj");
         inpk.initialize(cu, 50, sizeof(float), "inpk");
-        inpi.update(testi);
-        inpj.update(testj);
-        inpk.update(testk);
+        inpi.upload(testi);
+        inpj.upload(testj);
+        inpk.upload(testk);
         void* argtest[] = {&inpi.getDevicePointer(), &testj.getDevicePointer(), &testk.getDevicePointer()};
         cu.executeKernel(testKernel, argtest, 10);
 
