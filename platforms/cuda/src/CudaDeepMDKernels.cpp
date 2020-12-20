@@ -109,7 +109,7 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
         void* argtest[] = {&testi, &testj};
         cu.executeKernel(testKernel, argtest, 10);
         void* args[] = {&networkForces.getDevicePointer(), &cu.getForce().getDevicePointer(), &cu.getAtomIndexArray().getDevicePointer(), &numParticles, &paddedNumAtoms};
-        cu.executeKernel(addForcesKernel, args, numParticles);
+        // cu.executeKernel(addForcesKernel, args, numParticles);
     }
     return energy;
 }
