@@ -6,3 +6,7 @@ extern "C" __global__ void addForces(const FORCES_TYPE* __restrict__ forces, lon
         forceBuffers[atom+2*paddedNumAtoms] += (long long) (forces[3*index+2]*960*0x100000000);
     }
 }
+
+extern "C" __global__ void testForce(int inpi, int inpj){
+    printf("i: %d   j: %d\n", inpi, inpj);
+}
