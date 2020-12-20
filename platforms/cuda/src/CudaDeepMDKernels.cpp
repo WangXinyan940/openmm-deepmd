@@ -44,9 +44,6 @@ void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDFor
     cout << CudaDeepMDKernelSources::deepMDForce << endl;
     addForcesKernel = cu.getKernel(module, "addForces");
     testKernel = cu.getKernel(module, "testForces");
-    int ret = -1;
-    CUresult res = cuFuncGetAttribute(&ret, CU_FUNC_ATTRIBUTE_MAX_THREADS_PER_BLOCK, testKernel);
-    cout << res << "  " << ret << endl;
 }
 
 double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForces, bool includeEnergy) {
@@ -103,6 +100,10 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
         cout << "After upload" << endl;
         int paddedNumAtoms = cu.getPaddedNumAtoms();
         cout << numParticles << "   " << paddedNumAtoms << endl;
+
+        int ret = -1;
+        CUresult res = cuFuncGetAttribute(&ret, CU_FUNC_ATTRIBUTE_MAX_THREADS_PER_BLOCK, testKernel);
+        cout << res << "  " << ret << endl;
 
         vector<float> testi;
         vector<float> testj;
