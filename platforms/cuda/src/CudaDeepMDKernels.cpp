@@ -43,7 +43,6 @@ void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDFor
     cu.setAsCurrent();
     networkForces.initialize(cu, 3*numParticles, networkForcesSize, "networkForces");
     CUmodule module = cu.createModule(CudaDeepMDKernelSources::deepMDForce, defines);
-    cout << CudaDeepMDKernelSources::deepMDForce << endl;
     addForcesKernel = cu.getKernel(module, "addForces");
 }
 
