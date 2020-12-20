@@ -69,6 +69,7 @@ void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDFor
 
 double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForces, bool includeEnergy) {
 
+    cu.setAsCurrent();
     CUfunction testKernel2 = cu.getKernel(module, "testForces");
     vector<float> testi2;
     vector<float> testj2;
