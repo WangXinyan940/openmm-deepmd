@@ -1,4 +1,3 @@
-  
 #ifndef CUDA_DEEPMD_KERNELS_H_
 #define CUDA_DEEPMD_KERNELS_H_
 
@@ -44,9 +43,7 @@ private:
     OpenMM::CudaContext& cu;
     bool usePeriodic;
     OpenMM::CudaArray networkForces;
-    CUmodule module;
     CUfunction addForcesKernel;
-    CUfunction testKernel;
 };
 
 } // namespace DeepMDPlugin

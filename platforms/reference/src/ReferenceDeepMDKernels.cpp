@@ -75,30 +75,7 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
     vector<VALUETYPE2> force_tmp(positions.size(),0);
     vector<VALUETYPE2> virial(9,0);
     double ener = 0;
-    cout << "positions:" << endl;
-    for(int i=0;i<positions.size();i++){
-        cout << positions[i] << ", ";
-    }
-    cout << endl;
-    cout << "types:" << endl;
-    for(int i=0;i<types.size();i++){
-        cout << types[i] << ", ";
-    }
-    cout << endl;
-    cout << "boxVectors:" << endl;
-    for(int i=0;i<boxVectors.size();i++){
-        cout << boxVectors[i] << ", ";
-    }
-    cout << endl;
-    deepmodel.print_summary("   ");
-    cout << "DFP:" << deepmodel.dim_fparam() << "   DAP:" << deepmodel.dim_aparam() << endl;
     deepmodel.compute(ener, force_tmp, virial, positions, types, boxVectors);
-    cout << "Finished." << endl;
-    cout << "force_tmp:" << endl;
-    for(int i=0;i<force_tmp.size();i++){
-        cout << force_tmp[i] << ", ";
-    }
-    cout << endl;
     double energy = 0.0;
     if (includeEnergy) {
         energy = ener * 96.0;

@@ -7,10 +7,3 @@ void addForces(const FORCES_TYPE* __restrict__ forces, long long* __restrict__ f
         forceBuffers[atom+2*paddedNumAtoms] += (long long) (forces[3*index+2]*960*0x100000000);
     }
 }
-
-extern "C" __global__ 
-void testForces(float* inpi, float* inpj, float* inpk){
-    for (int atom = blockIdx.x*blockDim.x+threadIdx.x; atom < 50; atom += blockDim.x*gridDim.x) {
-        inpk[atom] = inpi[atom] * inpj[atom];
-    }
-}
