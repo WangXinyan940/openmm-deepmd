@@ -86,7 +86,7 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
     inpk2.upload(testk2);
     void* argtest2[] = {&inpi2.getDevicePointer(), &inpj2.getDevicePointer(), &inpk2.getDevicePointer()};
     cout << "before send in execute1" << endl;
-    cu.executeKernel(testKernel2, argtest, 10);
+    cu.executeKernel(testKernel2, argtest2, 10);
     inpk2.download(testk2);
     cout << testk2[0] << " " << testk2[10] << endl;
     
