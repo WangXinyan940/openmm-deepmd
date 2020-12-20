@@ -44,6 +44,7 @@ private:
     OpenMM::CudaContext& cu;
     bool usePeriodic;
     OpenMM::CudaArray networkForces;
+    CUmodule module;
     CUfunction addForcesKernel, testKernel;
 };
 
