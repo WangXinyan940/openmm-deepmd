@@ -49,8 +49,6 @@ void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDFor
 }
 
 double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForces, bool includeEnergy) {
-
-    cu.setAsCurrent();
     
 //    vector<Vec3> pos;
 //    context.getPositions(pos);
