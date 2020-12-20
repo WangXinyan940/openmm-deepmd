@@ -105,7 +105,9 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
         cout << "After upload" << endl;
         int paddedNumAtoms = cu.getPaddedNumAtoms();
         cout << numParticles << "   " << paddedNumAtoms << endl;
-        void* argtest[] = {&1, &2};
+        int testi = 1;
+        int testj = 2;
+        void* argtest[] = {&testi, &testj};
         cu.executeKernel(testKernel, argtest, 10);
         void* args[] = {&networkForces.getDevicePointer(), &cu.getForce().getDevicePointer(), &cu.getAtomIndexArray().getDevicePointer(), &numParticles, &paddedNumAtoms};
         cu.executeKernel(addForcesKernel, args, numParticles);
