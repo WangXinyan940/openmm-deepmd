@@ -45,7 +45,8 @@ private:
     bool usePeriodic;
     OpenMM::CudaArray networkForces;
     CUmodule module;
-    CUfunction addForcesKernel, testKernel;
+    CUfunction addForcesKernel;
+    CUfunction testKernel;
 };
 
 } // namespace DeepMDPlugin

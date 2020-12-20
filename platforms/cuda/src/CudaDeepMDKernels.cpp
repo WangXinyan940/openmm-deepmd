@@ -43,7 +43,7 @@ void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDFor
     module = cu.createModule(CudaDeepMDKernelSources::deepMDForce, defines);
     cout << CudaDeepMDKernelSources::deepMDForce << endl;
     addForcesKernel = cu.getKernel(module, "addForces");
-    // testKernel = cu.getKernel(module, "testForces");
+    testKernel = cu.getKernel(module, "testForces");
 }
 
 double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForces, bool includeEnergy) {
