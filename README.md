@@ -1,6 +1,5 @@
 # openmm-deepmd
-OpenMM plugin to use DeepMD-kit force field
-
+OpenMM plugin to use DeepMD-kit force field, which support
 - Reference Platform [OK]
 - CUDA Platform [OK]
 
