@@ -49,7 +49,7 @@ void ReferenceCalcDeepMDForceKernel::initialize(const System& system, const Deep
     // save cutoff of graph
     rcut = deepmodel.cutoff();
 
-    neighborList = new OpenMM::NeighborList();
+    neighborList = OpenMM::NeighborList();
 }
 
 double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForces, bool includeEnergy) {
@@ -87,7 +87,7 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
         // rcut < 1/2 cell or noPBC, generate OpenMM NeighborList
         // get NeighborList from OpenMM
         vector<set<int>> ex;
-        OpenMM::computeNeighborListVoxelHash(*neighborList, numParticles, pos, ex, box, usePeriodic, rcut, 0.0);
+        OpenMM::computeNeighborListVoxelHash(neighborList, numParticles, pos, ex, box, usePeriodic, rcut, 0.0);
         // convert to LammpsNeighborList
         vector<int> ilist_vec(numParticles, 0);
         vector<int> numnei(numParticles, 0);
