@@ -83,7 +83,7 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
     if (usePeriodic && (rcut > box[0][0]/2 || rcut > box[1][1]/2 || rcut > box[2][2]/2)) {
         // rcut > 1/2 cell, cannot use OpenMM NeighborList
         deepmodel.compute(ener, force_tmp, virial, positions, types, boxVectors);
-    } eles {
+    } else {
         // rcut < 1/2 cell or noPBC, generate OpenMM NeighborList
         // get NeighborList from OpenMM
         vector<set<int>> ex;
