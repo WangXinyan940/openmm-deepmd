@@ -103,7 +103,7 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
             firstnei_vec[pi].push_back(pj);
             firstnei_vec[pj].push_back(pi);
         }
-        int ** firstnei_ptr[numParticles];
+        int * firstnei_ptr[numParticles];
         for(int i=0;i<numParticles;i++){
             int* temp = &(firstnei_vec[i][0]);
             firstnei_ptr[i] = temp;
