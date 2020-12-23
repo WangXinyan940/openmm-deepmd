@@ -42,7 +42,7 @@ private:
     bool doubleModel;
     std::vector<float> positions, boxVectors;
     bool usePeriodic;
-    NeighborList* neighborList;
+    OpenMM::NeighborList* neighborList;
 };
 
 } // namespace DeepMDPlugin
