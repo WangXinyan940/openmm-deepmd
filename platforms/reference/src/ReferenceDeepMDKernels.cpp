@@ -55,6 +55,7 @@ void ReferenceCalcDeepMDForceKernel::initialize(const System& system, const Deep
 double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForces, bool includeEnergy) {
     vector<Vec3>& pos = extractPositions(context);
     vector<Vec3>& force = extractForces(context);
+    Vec3* box = extractBoxVectors(context);
     int numParticles = pos.size();
 
     vector<VALUETYPE2> positions(mask.size()*3,0.0);
@@ -65,7 +66,6 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
     }
     vector<VALUETYPE2> boxVectors(9,0.0);
     if (usePeriodic) {
-        Vec3* box = extractBoxVectors(context);
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 3; j++)
                 boxVectors[3*i+j] = box[i][j]*10;
@@ -87,7 +87,7 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
         // rcut < 1/2 cell or noPBC, generate OpenMM NeighborList
         // get NeighborList from OpenMM
         vector<set<int>> ex;
-        OpenMM::computeNeighborListVoxelHash(*neighborList, numParticles, pos, ex, extractBoxVectors(context), usePeriodic, rcut, 0.0);
+        OpenMM::computeNeighborListVoxelHash(*neighborList, numParticles, pos, ex, box, usePeriodic, rcut, 0.0);
         // convert to LammpsNeighborList
         vector<int> ilist_vec(numParticles, 0);
         vector<int> numnei(numParticles, 0);
