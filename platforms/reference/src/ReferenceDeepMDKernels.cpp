@@ -105,7 +105,7 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
         }
         int ** firstnei_ptr[numParticles];
         for(int i=0;i<numParticles;i++){
-            firstnei_ptr[i] = &firstnei_vec[i][0];
+            firstnei_ptr[i] = &(firstnei_vec[i])[0];
         }
         LammpsNeighborList lammpsnei(numParticles, &ilist_vec[0], &numnei[0], firstnei_ptr);
         deepmodel.compute(ener, force_tmp, virial, positions, types, boxVectors, 0, lammpsnei, 0);
