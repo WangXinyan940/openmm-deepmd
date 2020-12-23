@@ -46,6 +46,8 @@ void ReferenceCalcDeepMDForceKernel::initialize(const System& system, const Deep
     mask = force.getMask();
     types = force.getType();
     usePeriodic = force.usesPeriodicBoundaryConditions();
+    // save cutoff of graph
+    rcut = deepmodel.cutoff();
 }
 
 double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForces, bool includeEnergy) {
@@ -66,16 +68,32 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
             for (int j = 0; j < 3; j++)
                 boxVectors[3*i+j] = box[i][j]*10;
     } else {
-        boxVectors[0] = 9999.9;
-        boxVectors[4] = 9999.9;
-        boxVectors[8] = 9999.9;
+        boxVectors[0] = 999.9;
+        boxVectors[4] = 999.9;
+        boxVectors[8] = 999.9;
     }
 
     // run model
     vector<VALUETYPE2> force_tmp(positions.size(),0);
     vector<VALUETYPE2> virial(9,0);
     double ener = 0;
-    deepmodel.compute(ener, force_tmp, virial, positions, types, boxVectors);
+
+    if (usePeriodic && (rcut > box[0][0]/2 || rcut > box[1][1]/2 || rcut > box[2][2]/2)) {
+        // rcut > 1/2 cell, cannot use OpenMM NeighborList
+        deepmodel.compute(ener, force_tmp, virial, positions, types, boxVectors);
+    } eles {
+        // rcut < 1/2 cell or noPBC, generate OpenMM NeighborList
+        // get NeighborList from OpenMM
+        vector<set<int>> ex;
+        computeNeighborListVoxelHash(*neighborList, numParticles, pos, ex, extractBoxVectors(context), usePeriodic, rcut, 0.0);
+        // convert to LammpsNeighborList
+        vector<int> ilist_vec(numParticles, 0);
+        vector<int> numnei(numParticles, 0);
+        vector<vector<int>> firstnei_vec();
+        LammpsNeighborList lammpsnei(numParticles, &ilist_vec[0], &numnei[0], &firstnei_vec[0]);
+        deepmodel.compute(ener, force_tmp, virial, positions, types, boxVectors, 0, lammpsnei, 0);
+    }
+    
     double energy = 0.0;
     if (includeEnergy) {
         energy = ener * 96.0;

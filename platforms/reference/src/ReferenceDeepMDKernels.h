@@ -2,8 +2,10 @@
 #define REFERENCE_DEEPMD_KERNELS_H_
 
 #include "deepmd/NNPInter.h"
+#include "deepmd/common.h"
 #include "DeepMDKernels.h"
 #include "openmm/Platform.h"
+#include "openmm/reference/ReferenceNeighborList.h"
 #include <vector>
 
 namespace DeepMDPlugin {
@@ -34,11 +36,13 @@ public:
     double execute(OpenMM::ContextImpl& context, bool includeForces, bool includeEnergy);
 private:
     NNPInter deepmodel;
+    double rcut;
     std::vector<int> mask;
     std::vector<int> types;
     bool doubleModel;
     std::vector<float> positions, boxVectors;
     bool usePeriodic;
+    NeighborList* neighborList;
 };
 
 } // namespace DeepMDPlugin
