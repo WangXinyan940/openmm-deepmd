@@ -7,15 +7,17 @@ This OpenMM plugin enables applying DeepMD-kit force field to simulation, which 
 
 Details of DeepMD-kit can be found here: [https://github.com/deepmodeling/deepmd-kit]
 
-
-
 Building This Plugin
 ====================
-TBF
+Users can build this project by CMake with the followed steps:
+1. Prepare C++ API of tensorflow and DeepMD-kit. See https://github.com/deepmodeling/deepmd-kit/blob/master/doc/install.md#install-the-c-interface. The precision of DeepMD-kit should be selected in this step by setting CMake variable FLOAT_PREC to "high" or "low".
+2. Build OpenMM. See http://docs.openmm.org/latest/userguide/application.html#installing-openmm. 
+3. Use CMake to compile this project. You should at least set OPENMM_DIR, DEEPMD_DIR, TENSORFLOW_DIR. If you use double precision deepmd-kit, DEEPMD_HIGH_PREC should be turned on.
+4. Use 'make', 'make install' and then 'make PythonInstall' to install the plugin as openmmdeepmd in your python environment.
 
 Python API
 ==========
-TBF
+TBD
 
 CUDA Kernels
 ============
@@ -23,6 +25,7 @@ CUDA Kernels
 Although we have prepared two implements for Reference and CUDA Platform, using CUDA Platform is still not recommended because:
 - Rate determining step is DeepMD calculation (~0.1 s/step), not forcefield calculation. 
 - Neighbor list in CUDA Platform cannot be directly used in DeepMD model.
+- Switching CUDA contexts between OpenMM and Tensorflow would cause some unknown bug.
 
 License
 =======
