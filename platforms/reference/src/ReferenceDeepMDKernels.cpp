@@ -35,6 +35,7 @@ ReferenceCalcDeepMDForceKernel::~ReferenceCalcDeepMDForceKernel() {
 void ReferenceCalcDeepMDForceKernel::initialize(const System& system, const DeepMDForce& force) {
     int numParticles = system.getNumParticles();
     // hold model
+    cout << "Create model" << endl;
     NNPInter model(force.getFile());
     deepmodel = model;
 #ifdef HIGH_PREC
@@ -53,6 +54,7 @@ void ReferenceCalcDeepMDForceKernel::initialize(const System& system, const Deep
 }
 
 double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForces, bool includeEnergy) {
+    cout << "In execute" << endl;
     vector<Vec3>& pos = extractPositions(context);
     vector<Vec3>& force = extractForces(context);
     Vec3* box = extractBoxVectors(context);
