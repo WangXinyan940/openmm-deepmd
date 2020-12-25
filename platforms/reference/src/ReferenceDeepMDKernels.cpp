@@ -49,7 +49,7 @@ void ReferenceCalcDeepMDForceKernel::initialize(const System& system, const Deep
     usePeriodic = force.usesPeriodicBoundaryConditions();
     // save cutoff of graph
     rcut = deepmodel.cutoff();
-
+    cout << "Rcut: " << rcut << endl;
     neighborList = OpenMM::NeighborList();
 }
 
