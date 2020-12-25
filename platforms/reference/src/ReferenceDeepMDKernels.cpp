@@ -91,8 +91,8 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
         // get NeighborList from OpenMM
         cout << "Use OpenMM" << endl;
         vector<set<int>> ex;
-        cout << "Build neighbor list...";
-        OpenMM::computeNeighborListVoxelHash(neighborList, numParticles, pos, ex, box, usePeriodic, rcut, 0.0);
+        cout << "Build neighbor list..." << endl;
+        computeNeighborListVoxelHash(neighborList, numParticles, pos, ex, box, usePeriodic, rcut, 0.0);
         cout << "Y" << endl;
         // convert to LammpsNeighborList
         vector<int> ilist_vec(numParticles, 0);
@@ -125,7 +125,7 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
     if (includeForces) {
         for (int i = 0; i < mask.size(); i++) {
             int p = mask[i];
-            force[p][0] += force_tmp[3*i]*960.0;
+            force[p][0] += force_tmp[ 3*i ]*960.0;
             force[p][1] += force_tmp[3*i+1]*960.0;
             force[p][2] += force_tmp[3*i+2]*960.0;
         }
