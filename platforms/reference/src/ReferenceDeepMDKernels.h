@@ -7,6 +7,7 @@
 #include "openmm/Platform.h"
 #include "openmm/reference/ReferenceNeighborList.h"
 #include <vector>
+#include <iostream>
 
 namespace DeepMDPlugin {
 
@@ -16,6 +17,7 @@ namespace DeepMDPlugin {
 class ReferenceCalcDeepMDForceKernel : public CalcDeepMDForceKernel {
 public:
     ReferenceCalcDeepMDForceKernel(std::string name, const OpenMM::Platform& platform) : CalcDeepMDForceKernel(name, platform) {
+        std::cout << "Create kernel" << std::endl;
     }
     ~ReferenceCalcDeepMDForceKernel();
     /**
