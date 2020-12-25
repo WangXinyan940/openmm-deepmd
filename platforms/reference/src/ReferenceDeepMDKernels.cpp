@@ -82,12 +82,16 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
 
     if (usePeriodic && (rcut > box[0][0]/2 || rcut > box[1][1]/2 || rcut > box[2][2]/2)) {
         // rcut > 1/2 cell, cannot use OpenMM NeighborList
+        cout << "Use deepmd" << endl;
         deepmodel.compute(ener, force_tmp, virial, positions, types, boxVectors);
     } else {
         // rcut < 1/2 cell or noPBC, generate OpenMM NeighborList
         // get NeighborList from OpenMM
+        cout << "Use OpenMM" << endl;
         vector<set<int>> ex;
+        cout << "Build neighbor list...";
         OpenMM::computeNeighborListVoxelHash(neighborList, numParticles, pos, ex, box, usePeriodic, rcut, 0.0);
+        cout << "Y" << endl;
         // convert to LammpsNeighborList
         vector<int> ilist_vec(numParticles, 0);
         vector<int> numnei(numParticles, 0);
