@@ -7,6 +7,7 @@
 #include "openmm/Platform.h"
 #include "openmm/reference/ReferenceNeighborList.h"
 #include <vector>
+#include <set>
 #include <iostream>
 
 namespace DeepMDPlugin {
