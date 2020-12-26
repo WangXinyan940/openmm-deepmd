@@ -90,7 +90,7 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
         // rcut < 1/2 cell or noPBC, generate OpenMM NeighborList
         // get NeighborList from OpenMM
         cout << "Use OpenMM" << endl;
-        vector<set<int>> ex(0);
+        vector<set<int>> ex(numParticles);
         cout << "Build neighbor list..." << endl;
         computeNeighborListVoxelHash(neighborList, numParticles, pos, ex, box, usePeriodic, rcut, 0.0);
         cout << "Y" << endl;
