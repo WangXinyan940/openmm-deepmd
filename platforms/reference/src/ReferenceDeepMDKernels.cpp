@@ -97,10 +97,13 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
         for(int i=0;i<neighborList.size();i++){
             int pi = neighborList[i].first;
             int pj = neighborList[i].second;
-            numnei[pi] += 1;
-            numnei[pj] += 1;
-            firstnei_vec[pi].push_back(pj);
-            firstnei_vec[pj].push_back(pi);
+            if (pi < pj){
+                numnei[pi] += 1;
+                firstnei_vec[pi].push_back(pj);
+            } else {
+                numnei[pj] += 1;
+                firstnei_vec[pj].push_back(pi);
+            }
         }
         int * firstnei_ptr[numParticles];
         for(int i=0;i<numParticles;i++){
