@@ -18,7 +18,6 @@ namespace DeepMDPlugin {
 class ReferenceCalcDeepMDForceKernel : public CalcDeepMDForceKernel {
 public:
     ReferenceCalcDeepMDForceKernel(std::string name, const OpenMM::Platform& platform) : CalcDeepMDForceKernel(name, platform) {
-        std::cout << "Create kernel" << std::endl;
     }
     ~ReferenceCalcDeepMDForceKernel();
     /**
@@ -46,6 +45,7 @@ private:
     std::vector<float> positions, boxVectors;
     bool usePeriodic;
     OpenMM::NeighborList neighborList;
+    vector<set<int>> ex;
 };
 
 } // namespace DeepMDPlugin
