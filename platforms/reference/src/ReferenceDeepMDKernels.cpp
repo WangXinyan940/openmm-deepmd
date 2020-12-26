@@ -35,7 +35,6 @@ ReferenceCalcDeepMDForceKernel::~ReferenceCalcDeepMDForceKernel() {
 void ReferenceCalcDeepMDForceKernel::initialize(const System& system, const DeepMDForce& force) {
     int numParticles = system.getNumParticles();
     // hold model
-    cout << "Create model" << endl;
     NNPInter model(force.getFile());
     deepmodel = model;
 #ifdef HIGH_PREC
@@ -49,12 +48,10 @@ void ReferenceCalcDeepMDForceKernel::initialize(const System& system, const Deep
     usePeriodic = force.usesPeriodicBoundaryConditions();
     // save cutoff of graph
     rcut = deepmodel.cutoff()*0.1;
-    cout << "Rcut: " << rcut << endl;
     neighborList = NeighborList();
 }
 
 double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForces, bool includeEnergy) {
-    cout << "In execute" << endl;
     vector<Vec3>& pos = extractPositions(context);
     vector<Vec3>& force = extractForces(context);
     Vec3* box = extractBoxVectors(context);
@@ -84,16 +81,12 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
 
     if (usePeriodic && (rcut > box[0][0]/2 || rcut > box[1][1]/2 || rcut > box[2][2]/2)) {
         // rcut > 1/2 cell, cannot use OpenMM NeighborList
-        cout << "Use deepmd" << endl;
         deepmodel.compute(ener, force_tmp, virial, positions, types, boxVectors);
     } else {
         // rcut < 1/2 cell or noPBC, generate OpenMM NeighborList
         // get NeighborList from OpenMM
-        cout << "Use OpenMM" << endl;
         vector<set<int>> ex(numParticles);
-        cout << "Build neighbor list..." << endl;
         computeNeighborListVoxelHash(neighborList, numParticles, pos, ex, box, usePeriodic, rcut, 0.0);
-        cout << "Y" << endl;
         // convert to LammpsNeighborList
         vector<int> ilist_vec(numParticles, 0);
         vector<int> numnei(numParticles, 0);
