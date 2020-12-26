@@ -47,7 +47,8 @@ void ReferenceCalcDeepMDForceKernel::initialize(const System& system, const Deep
     types = force.getType();
     usePeriodic = force.usesPeriodicBoundaryConditions();
     // save cutoff of graph
-    rcut = deepmodel.cutoff()*0.12;
+    rcut = deepmodel.cutoff()*0.15;
+    cout << "Rcut:" << rcut << endl;
     neighborList = NeighborList();
     ex.resize(numParticles);
 }
