@@ -61,9 +61,17 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
 
     vector<VALUETYPE2> positions(mask.size()*3,0.0);
     for (int i = 0; i < mask.size(); i++) {
-        positions[3*i] = pos[mask[i]][0]*10;
-        positions[3*i+1] = pos[mask[i]][1]*10;
-        positions[3*i+2] = pos[mask[i]][2]*10;
+        for (int j = 0; j < 3; j++){
+            VALUETYPE2 pwrite = pos[mask[i]][j];
+            while (usePeriodic && (pwrite > cell[j][j] || pwrite < 0)){
+                if (pwrite > cell[j][j]){
+                    pwrite -= cell[j][j];
+                } else if (pwrite < 0){
+                    pwrite += cell[j][j];
+                }
+            }
+            positions[3*i+j] = pwrite * 10;
+        }
     }
     vector<VALUETYPE2> boxVectors(9,0.0);
     if (usePeriodic) {
@@ -81,11 +89,10 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
     vector<VALUETYPE2> virial(9,0);
     double ener = 0;
 
-    if (usePeriodic && (rcut > box[0][0]/2 || rcut > box[1][1]/2 || rcut > box[2][2]/2)) {
-        // rcut > 1/2 cell, cannot use OpenMM NeighborList
+    if (usePeriodic) {
+        // Cost of converting OpenMM neighbor list to Lammps type is too high
         deepmodel.compute(ener, force_tmp, virial, positions, types, boxVectors);
     } else {
-        // rcut < 1/2 cell or noPBC, generate OpenMM NeighborList
         // get NeighborList from OpenMM
         computeNeighborListVoxelHash(neighborList, numParticles, pos, ex, box, usePeriodic, rcut, 0.0);
         // convert to LammpsNeighborList
