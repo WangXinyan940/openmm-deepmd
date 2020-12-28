@@ -63,11 +63,11 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
     for (int i = 0; i < mask.size(); i++) {
         for (int j = 0; j < 3; j++){
             VALUETYPE2 pwrite = pos[mask[i]][j];
-            while (usePeriodic && (pwrite > cell[j][j] || pwrite < 0)){
-                if (pwrite > cell[j][j]){
-                    pwrite -= cell[j][j];
+            while (usePeriodic && (pwrite > box[j][j] || pwrite < 0)){
+                if (pwrite > box[j][j]){
+                    pwrite -= box[j][j];
                 } else if (pwrite < 0){
-                    pwrite += cell[j][j];
+                    pwrite += box[j][j];
                 }
             }
             positions[3*i+j] = pwrite * 10;
