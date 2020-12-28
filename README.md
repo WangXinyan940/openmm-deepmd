@@ -5,7 +5,7 @@ This OpenMM plugin enables applying DeepMD-kit force field to simulation, which 
 - Reference Platform [OK]
 - CUDA Platform [OK]
 
-Details of DeepMD-kit can be found here: [https://github.com/deepmodeling/deepmd-kit]
+Details of DeepMD-kit can be found here: https://github.com/deepmodeling/deepmd-kit
 
 Building This Plugin
 ====================
