@@ -46,36 +46,79 @@ void ReferenceCalcDeepMDForceKernel::initialize(const System& system, const Deep
     mask = force.getMask();
     types = force.getType();
     usePeriodic = force.usesPeriodicBoundaryConditions();
+    // save cutoff of graph
+    rcut = deepmodel.cutoff()*0.14;
+    cout << "Rcut:" << rcut << endl;
+    neighborList = NeighborList();
+    ex.resize(numParticles);
 }
 
 double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForces, bool includeEnergy) {
     vector<Vec3>& pos = extractPositions(context);
     vector<Vec3>& force = extractForces(context);
+    Vec3* box = extractBoxVectors(context);
     int numParticles = pos.size();
 
     vector<VALUETYPE2> positions(mask.size()*3,0.0);
     for (int i = 0; i < mask.size(); i++) {
-        positions[3*i] = pos[mask[i]][0]*10;
-        positions[3*i+1] = pos[mask[i]][1]*10;
-        positions[3*i+2] = pos[mask[i]][2]*10;
+        for (int j = 0; j < 3; j++){
+            VALUETYPE2 pwrite = pos[mask[i]][j];
+            while (usePeriodic && (pwrite > cell[j][j] || pwrite < 0)){
+                if (pwrite > cell[j][j]){
+                    pwrite -= cell[j][j];
+                } else if (pwrite < 0){
+                    pwrite += cell[j][j];
+                }
+            }
+            positions[3*i+j] = pwrite * 10;
+        }
     }
     vector<VALUETYPE2> boxVectors(9,0.0);
     if (usePeriodic) {
-        Vec3* box = extractBoxVectors(context);
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 3; j++)
                 boxVectors[3*i+j] = box[i][j]*10;
     } else {
-        boxVectors[0] = 9999.9;
-        boxVectors[4] = 9999.9;
-        boxVectors[8] = 9999.9;
+        boxVectors[0] = 999.9;
+        boxVectors[4] = 999.9;
+        boxVectors[8] = 999.9;
     }
 
     // run model
     vector<VALUETYPE2> force_tmp(positions.size(),0);
     vector<VALUETYPE2> virial(9,0);
     double ener = 0;
-    deepmodel.compute(ener, force_tmp, virial, positions, types, boxVectors);
+
+    if (usePeriodic) {
+        // Cost of converting OpenMM neighbor list to Lammps type is too high
+        deepmodel.compute(ener, force_tmp, virial, positions, types, boxVectors);
+    } else {
+        // get NeighborList from OpenMM
+        computeNeighborListVoxelHash(neighborList, numParticles, pos, ex, box, usePeriodic, rcut, 0.0);
+        // convert to LammpsNeighborList
+        vector<int> ilist_vec(numParticles, 0);
+        vector<int> numnei(numParticles, 0);
+        vector<vector<int>> firstnei_vec(numParticles);
+        for(int i=0;i<numParticles;i++){
+            ilist_vec[i] = i;
+        }
+        for(int i=0;i<neighborList.size();i++){
+            int pi = neighborList[i].first;
+            int pj = neighborList[i].second;
+            numnei[pi] += 1;
+            firstnei_vec[pi].push_back(pj);
+            numnei[pj] += 1;
+            firstnei_vec[pj].push_back(pi);
+        }
+        int * firstnei_ptr[numParticles];
+        for(int i=0;i<numParticles;i++){
+            int* temp = &(firstnei_vec[i][0]);
+            firstnei_ptr[i] = temp;
+        }
+        LammpsNeighborList lammpsnei(numParticles, &ilist_vec[0], &numnei[0], firstnei_ptr);
+        deepmodel.compute(ener, force_tmp, virial, positions, types, boxVectors, 0, lammpsnei, 0);
+    }
+    
     double energy = 0.0;
     if (includeEnergy) {
         energy = ener * 96.0;
@@ -83,7 +126,7 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
     if (includeForces) {
         for (int i = 0; i < mask.size(); i++) {
             int p = mask[i];
-            force[p][0] += force_tmp[3*i]*960.0;
+            force[p][0] += force_tmp[ 3*i ]*960.0;
             force[p][1] += force_tmp[3*i+1]*960.0;
             force[p][2] += force_tmp[3*i+2]*960.0;
         }
