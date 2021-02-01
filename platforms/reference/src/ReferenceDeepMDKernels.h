@@ -39,7 +39,6 @@ public:
 private:
     NNPInter deepmodel;
     double rcut;
-    std::vector<int> mask;
     std::vector<int> types;
     bool doubleModel;
     std::vector<float> positions, boxVectors;

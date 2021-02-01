@@ -22,17 +22,6 @@ public:
      */
     DeepMDForce(std::string filename);
     /**
-     * Set mask for DeepMD force field. Only the index in mask vector would be
-     * included in DeepMD model
-     * 
-     * @param mask       the list of index included in DeepMD model
-     */
-    void setMask(std::vector<int> mask);
-    /**
-     * Get the mask for DeepMD force field.
-     */
-    const std::vector<int>& getMask() const;
-    /**
      * Set type vector as the input of DeepMD model.
      */
     void setType(std::vector<int> type);
@@ -67,7 +56,6 @@ protected:
 private:
     std::string dpfile;
     bool usePeriodic;
-    std::vector<int> innermask;
     std::vector<int> innertype;
 };
 
