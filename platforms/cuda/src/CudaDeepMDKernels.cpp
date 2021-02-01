@@ -26,7 +26,6 @@ void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDFor
     deepmodel = model;
 
     // create input tensors
-    mask = force.getMask();
     types = force.getType();
 
     // Inititalize CUDA objects.
@@ -52,11 +51,11 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
     context.getPositions(pos);
     int numParticles = cu.getNumAtoms();
     
-    vector<VALUETYPE2> positions(3*mask.size(),0.0);
-    for (int i = 0; i < mask.size(); i++) {
-        positions[3*i] = pos[mask[i]][0]*10;
-        positions[3*i+1] = pos[mask[i]][1]*10;
-        positions[3*i+2] = pos[mask[i]][2]*10;
+    vector<VALUETYPE2> positions(3*numParticles,0.0);
+    for (int i = 0; i < numParticles; i++) {
+        positions[3*i] = pos[i][0]*10;
+        positions[3*i+1] = pos[i][1]*10;
+        positions[3*i+2] = pos[i][2]*10;
     }
     // cout << "Position loaded" << endl;
 
@@ -87,10 +86,9 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
     }
     if (includeForces) {
         vector<VALUETYPE> data(3*pos.size(),0);
-        for(int i=0;i<mask.size();i++){
-            int p = mask[i];
+        for(int i=0;i<numParticles;i++){
             for(int j=0;j<3;j++){
-                data[3*p+j] = force_tmp[3*i+j];
+                data[3*i+j] = force_tmp[3*i+j];
             }
         }
         networkForces.upload(data);

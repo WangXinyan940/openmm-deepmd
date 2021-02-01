@@ -19,16 +19,6 @@ const string& DeepMDForce::getFile() const {
     return dpfile;
 }
 
-void DeepMDForce::setMask(std::vector<int> mask){
-    for(int i=0;i<mask.size();i++){
-        innermask.push_back(mask[i]);
-    }
-}
-
-const std::vector<int>& DeepMDForce::getMask() const {
-    return innermask;
-}
-
 void DeepMDForce::setType(std::vector<int> type) {
     for(int i=0;i<type.size();i++){
         innertype.push_back(type[i]);

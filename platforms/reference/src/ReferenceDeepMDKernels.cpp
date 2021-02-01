@@ -43,7 +43,6 @@ void ReferenceCalcDeepMDForceKernel::initialize(const System& system, const Deep
     cout << "LOW PREC" << endl;
 #endif
     // create input tensors
-    mask = force.getMask();
     types = force.getType();
     usePeriodic = force.usesPeriodicBoundaryConditions();
     // save cutoff of graph
@@ -59,13 +58,13 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
     Vec3* box = extractBoxVectors(context);
     int numParticles = pos.size();
 
-    vector<VALUETYPE2> positions(mask.size()*3,0.0);
-    for (int i = 0; i < mask.size(); i++) {
+    vector<VALUETYPE2> positions(numParticles*3,0.0);
+    for (int i = 0; i < numParticles; i++) {
         for (int j = 0; j < 3; j++){
-            VALUETYPE2 pwrite = pos[mask[i]][j];
-            while (usePeriodic && (pwrite > box[j][j] || pwrite < 0)){
-                if (pwrite > box[j][j]){
-                    pwrite -= box[j][j];
+            VALUETYPE2 pwrite = pos[i][j];
+            while (usePeriodic && (pwrite > cell[j][j] || pwrite < 0)){
+                if (pwrite > cell[j][j]){
+                    pwrite -= cell[j][j];
                 } else if (pwrite < 0){
                     pwrite += box[j][j];
                 }
