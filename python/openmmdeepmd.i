@@ -44,10 +44,12 @@ namespace DeepMDPlugin {
 
 class DeepMDForce : public OpenMM::Force {
 public:
-    DeepMDForce(std::string file);
+    DeepMDForce(std::string filename, double scale);
     const std::string& getFile() const;
     void setType(std::vector<int> type);
     const std::vector<int>& getType() const;
+    void setScale(double scale);
+    double getScale() const;
     void setUsesPeriodicBoundaryConditions(bool periodic);
     bool usesPeriodicBoundaryConditions() const;
 
