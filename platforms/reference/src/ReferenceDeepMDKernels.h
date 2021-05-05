@@ -1,8 +1,8 @@
 #ifndef REFERENCE_DEEPMD_KERNELS_H_
 #define REFERENCE_DEEPMD_KERNELS_H_
 
-#include "deepmd/NNPInter.h"
-#include "deepmd/common.h"
+
+#include "deepmd/DeepPot.h"
 #include "DeepMDKernels.h"
 #include "openmm/Platform.h"
 #include "openmm/reference/ReferenceNeighborList.h"
@@ -37,14 +37,12 @@ public:
      */
     double execute(OpenMM::ContextImpl& context, bool includeForces, bool includeEnergy);
 private:
-    NNPInter deepmodel;
-    double rcut;
+    deepmd::DeepPot deepmodel;
+    double dpscale;
     std::vector<int> types;
     bool doubleModel;
     std::vector<float> positions, boxVectors;
     bool usePeriodic;
-    OpenMM::NeighborList neighborList;
-    vector<set<int>> ex;
 };
 
 } // namespace DeepMDPlugin

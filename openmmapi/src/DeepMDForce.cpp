@@ -8,7 +8,7 @@ using namespace DeepMDPlugin;
 using namespace OpenMM;
 using namespace std;
 
-DeepMDForce::DeepMDForce(std::string filename) : dpfile(filename), usePeriodic(false) {
+DeepMDForce::DeepMDForce(std::string filename, double scale) : dpfile(filename), usePeriodic(false), dpscale(scale) {
 }
 
 void DeepMDForce::setFile(std::string& filename) {
@@ -39,4 +39,12 @@ void DeepMDForce::setUsesPeriodicBoundaryConditions(bool periodic) {
 
 bool DeepMDForce::usesPeriodicBoundaryConditions() const {
     return usePeriodic;
+}
+
+void DeepMDForce::setScale(double scale) {
+    dpscale = scale;
+}
+
+double DeepMDForce::getScale() const {
+    return dpscale;
 }

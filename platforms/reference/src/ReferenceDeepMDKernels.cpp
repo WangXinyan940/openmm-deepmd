@@ -35,21 +35,17 @@ ReferenceCalcDeepMDForceKernel::~ReferenceCalcDeepMDForceKernel() {
 void ReferenceCalcDeepMDForceKernel::initialize(const System& system, const DeepMDForce& force) {
     int numParticles = system.getNumParticles();
     // hold model
-    NNPInter model(force.getFile());
+    deepmd::DeepPot model(force.getFile());
     deepmodel = model;
 #ifdef HIGH_PREC
     cout << "HIGH PREC" << endl;
 #else
     cout << "LOW PREC" << endl;
 #endif
+    dpscale = force.getScale();
     // create input tensors
     types = force.getType();
     usePeriodic = force.usesPeriodicBoundaryConditions();
-    // save cutoff of graph
-    rcut = deepmodel.cutoff()*0.1;
-    cout << "Rcut:" << rcut << endl;
-    neighborList = NeighborList();
-    ex.resize(numParticles);
 }
 
 double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForces, bool includeEnergy) {
@@ -92,14 +88,13 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
     
     double energy = 0.0;
     if (includeEnergy) {
-        energy = ener * 96.0;
+        energy = ener * 96.0 * dpscale;
     }
     if (includeForces) {
-        for (int i = 0; i < mask.size(); i++) {
-            int p = mask[i];
-            force[p][0] += force_tmp[ 3*i ]*960.0;
-            force[p][1] += force_tmp[3*i+1]*960.0;
-            force[p][2] += force_tmp[3*i+2]*960.0;
+        for (int i = 0; i < numParticles; i++) {
+            force[i][0] += force_tmp[ 3*i ]*960.0*dpscale;
+            force[i][1] += force_tmp[3*i+1]*960.0*dpscale;
+            force[i][2] += force_tmp[3*i+2]*960.0*dpscale;
         }
     }
     return energy;

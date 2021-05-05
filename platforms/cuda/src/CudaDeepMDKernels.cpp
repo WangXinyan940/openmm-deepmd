@@ -22,7 +22,7 @@ void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDFor
 
     int numParticles = system.getNumParticles();
     // hold model
-    NNPInter model(force.getFile());
+    deepmd::DeepPot model(force.getFile());
     deepmodel = model;
 
     // create input tensors
@@ -39,6 +39,7 @@ void CudaCalcDeepMDForceKernel::initialize(const System& system, const DeepMDFor
         defines["FORCES_TYPE"] = "float";
         int networkForcesSize = sizeof(float);
     #endif
+    dpscale = force.getScale();
     cu.setAsCurrent();
     networkForces.initialize(cu, 3*numParticles, networkForcesSize, "networkForces");
     CUmodule module = cu.createModule(CudaDeepMDKernelSources::deepMDForce, defines);
@@ -53,6 +54,7 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
     
     vector<VALUETYPE2> positions(3*numParticles,0.0);
     for (int i = 0; i < numParticles; i++) {
+        // nm to angstrom
         positions[3*i] = pos[i][0]*10;
         positions[3*i+1] = pos[i][1]*10;
         positions[3*i+2] = pos[i][2]*10;
@@ -65,11 +67,11 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
         cu.getPeriodicBoxVectors(box[0], box[1], box[2]);
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 3; j++)
-                boxVectors[i*3+j] = box[i][j]*10;
+                boxVectors[i*3+j] = box[i][j]*10; // nm to angstrom
     } else {
-        boxVectors[0] = 9999.9;
-        boxVectors[4] = 9999.9;
-        boxVectors[8] = 9999.9;
+        boxVectors[0] = 999.9;
+        boxVectors[4] = 999.9;
+        boxVectors[8] = 999.9;
     }
     // cout << "Box loaded" << endl;
     
@@ -82,13 +84,13 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
 
     double energy = 0.0;
     if (includeEnergy) {
-        energy = ener*96;
+        energy = ener*96*dpscale; // ev to kj/mol
     }
     if (includeForces) {
         vector<VALUETYPE> data(3*pos.size(),0);
         for(int i=0;i<numParticles;i++){
             for(int j=0;j<3;j++){
-                data[3*i+j] = force_tmp[3*i+j];
+                data[3*i+j] = force_tmp[3*i+j]*dpscale;
             }
         }
         networkForces.upload(data);

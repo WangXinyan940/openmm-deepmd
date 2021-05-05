@@ -20,7 +20,7 @@ public:
      *
      * @param filename   the path to the file containing the model
      */
-    DeepMDForce(std::string filename);
+    DeepMDForce(std::string filename, double scale);
     /**
      * Set type vector as the input of DeepMD model.
      */
@@ -39,6 +39,8 @@ public:
      * Get the path to the file containing the freezed DeepMD-kit model.
      */
     const std::string& getFile() const;
+    void setScale(double scale);
+    double getScale() const;
     /**
      * Set whether this force makes use of periodic boundary conditions.  If this is set
      * to true, the TensorFlow graph must include a 3x3 tensor called "boxvectors", which
@@ -57,6 +59,7 @@ private:
     std::string dpfile;
     bool usePeriodic;
     std::vector<int> innertype;
+    double dpscale;
 };
 
 } // namespace DeepMDPlugin
