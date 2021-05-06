@@ -25,7 +25,7 @@ extension = Extension(name='_openmmdeepmd',
                       libraries=['OpenMM', 'OpenMMDEEPMD'],
                       include_dirs=[os.path.join(openmm_dir, 'include'), deepmd_plugin_header_dir, deepmd_lib_header_dir, tensorflow_lib_header_dir],
                       library_dirs=[os.path.join(openmm_dir, 'lib'), deepmd_plugin_library_dir, deepmd_lib_library_dir, tensorflow_lib_library_dir],
-                      runtime_library_dirs=[os.path.join(openmm_dir, 'lib')],
+                      runtime_library_dirs=[os.path.join(openmm_dir, 'lib'), deepmd_plugin_library_dir, deepmd_lib_library_dir, tensorflow_lib_library_dir],
                       extra_compile_args=extra_compile_args,
                       extra_link_args=extra_link_args
                      )
