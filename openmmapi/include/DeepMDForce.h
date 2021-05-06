@@ -3,6 +3,7 @@
 
 #include "openmm/Context.h"
 #include "openmm/Force.h"
+#include "deepmd/DeepPot.h"
 #include <string>
 #include <vector>
 
