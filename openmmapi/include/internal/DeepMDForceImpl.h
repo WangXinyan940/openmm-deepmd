@@ -35,7 +35,7 @@
 #include "DeepMDForce.h"
 #include "openmm/internal/ForceImpl.h"
 #include "openmm/Kernel.h"
-#include "deepmd/NNPInter.h"
+#include "deepmd/DeepPot.h"
 #include <utility>
 #include <set>
 #include <string>
