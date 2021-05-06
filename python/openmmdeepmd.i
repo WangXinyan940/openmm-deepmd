@@ -29,7 +29,7 @@
 
 %feature("shadow") DeepMDPlugin::DeepMDForce::DeepMDForce %{
     def __init__(self, *args):
-        this = _openmmdeepmd.new_DeepMDForce(args[0])
+        this = _openmmdeepmd.new_DeepMDForce(args[0], args[1])
         try:
             self.this.append(this)
         except Exception:
