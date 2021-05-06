@@ -9,6 +9,8 @@ deepmd_plugin_header_dir = '@DEEPMD_PLUGIN_HEADER_DIR@'
 deepmd_plugin_library_dir = '@DEEPMD_PLUGIN_LIBRARY_DIR@'
 deepmd_lib_header_dir = '@DEEPMD_DIR@/include'
 deepmd_lib_library_dir = '@DEEPMD_DIR@/lib'
+tensorflow_lib_header_dir = '@TENSORFLOW_DIR@/include'
+tensorflow_lib_library_dir = '@TENSORFLOW_DIR@/lib'
 
 # setup extra compile and link arguments on Mac
 extra_compile_args = ['-std=c++11']
@@ -21,8 +23,8 @@ if platform.system() == 'Darwin':
 extension = Extension(name='_openmmdeepmd',
                       sources=['DeepMDPluginWrapper.cpp'],
                       libraries=['OpenMM', 'OpenMMDEEPMD'],
-                      include_dirs=[os.path.join(openmm_dir, 'include'), deepmd_plugin_header_dir, deepmd_lib_header_dir],
-                      library_dirs=[os.path.join(openmm_dir, 'lib'), deepmd_plugin_library_dir, deepmd_lib_library_dir],
+                      include_dirs=[os.path.join(openmm_dir, 'include'), deepmd_plugin_header_dir, deepmd_lib_header_dir, tensorflow_lib_header_dir],
+                      library_dirs=[os.path.join(openmm_dir, 'lib'), deepmd_plugin_library_dir, deepmd_lib_library_dir, tensorflow_lib_library_dir],
                       runtime_library_dirs=[os.path.join(openmm_dir, 'lib')],
                       extra_compile_args=extra_compile_args,
                       extra_link_args=extra_link_args
