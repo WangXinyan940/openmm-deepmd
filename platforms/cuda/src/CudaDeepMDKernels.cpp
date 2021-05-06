@@ -87,7 +87,7 @@ double CudaCalcDeepMDForceKernel::execute(ContextImpl& context, bool includeForc
         energy = ener*96*dpscale; // ev to kj/mol
     }
     if (includeForces) {
-        vector<VALUETYPE> data(3*pos.size(),0);
+        vector<VALUETYPE2> data(3*pos.size(),0);
         for(int i=0;i<numParticles;i++){
             for(int j=0;j<3;j++){
                 data[3*i+j] = force_tmp[3*i+j]*dpscale;
