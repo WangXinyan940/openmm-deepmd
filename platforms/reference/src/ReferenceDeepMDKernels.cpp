@@ -58,9 +58,9 @@ double ReferenceCalcDeepMDForceKernel::execute(ContextImpl& context, bool includ
     for (int i = 0; i < numParticles; i++) {
         for (int j = 0; j < 3; j++){
             VALUETYPE2 pwrite = pos[i][j];
-            while (usePeriodic && (pwrite > cell[j][j] || pwrite < 0)){
-                if (pwrite > cell[j][j]){
-                    pwrite -= cell[j][j];
+            while (usePeriodic && (pwrite > box[j][j] || pwrite < 0)){
+                if (pwrite > box[j][j]){
+                    pwrite -= box[j][j];
                 } else if (pwrite < 0){
                     pwrite += box[j][j];
                 }
