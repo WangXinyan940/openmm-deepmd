@@ -37,7 +37,7 @@ public:
      */
     double execute(OpenMM::ContextImpl& context, bool includeForces, bool includeEnergy);
 private:
-    deepmd::NNPInter deepmodel;
+    NNPInter deepmodel;
     double dpscale;
     std::vector<int> types;
     bool doubleModel;

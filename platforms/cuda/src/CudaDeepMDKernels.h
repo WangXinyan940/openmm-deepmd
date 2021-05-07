@@ -36,7 +36,7 @@ public:
      */
     double execute(OpenMM::ContextImpl& context, bool includeForces, bool includeEnergy);
 private:
-    deepmd::NNPInter deepmodel;
+    NNPInter deepmodel;
     std::vector<int> types;
     bool hasInitializedKernel;
     OpenMM::CudaContext& cu;

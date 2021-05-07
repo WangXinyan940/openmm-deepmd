@@ -35,7 +35,7 @@ ReferenceCalcDeepMDForceKernel::~ReferenceCalcDeepMDForceKernel() {
 void ReferenceCalcDeepMDForceKernel::initialize(const System& system, const DeepMDForce& force) {
     int numParticles = system.getNumParticles();
     // hold model
-    deepmd::DeepPot model(force.getFile());
+    NNPInter model(force.getFile());
     deepmodel = model;
 #ifdef HIGH_PREC
     cout << "HIGH PREC" << endl;
