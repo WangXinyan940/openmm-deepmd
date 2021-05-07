@@ -16,10 +16,6 @@ tensorflow_lib_library_dir = '@TENSORFLOW_DIR@/lib'
 extra_compile_args = ['-std=c++11', '-D_GLIBCXX_USE_CXX11_ABI=0']
 extra_link_args = ['-ldeepmd', '-ldeepmd_op']
 
-if platform.system() == 'Darwin':
-    extra_compile_args += ['-stdlib=libc++', '-mmacosx-version-min=10.7']
-    extra_link_args += ['-stdlib=libc++', '-mmacosx-version-min=10.7', '-Wl', '-rpath', openmm_dir+'/lib']
-
 extension = Extension(name='_openmmdeepmd',
                       sources=['DeepMDPluginWrapper.cpp'],
                       libraries=['OpenMM', 'OpenMMDEEPMD'],
