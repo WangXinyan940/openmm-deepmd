@@ -2,7 +2,7 @@
 #define REFERENCE_DEEPMD_KERNELS_H_
 
 
-#include "deepmd/DeepPot.h"
+#include "deepmd/NNPInter.h"
 #include "DeepMDKernels.h"
 #include "openmm/Platform.h"
 #include "openmm/reference/ReferenceNeighborList.h"
@@ -37,7 +37,7 @@ public:
      */
     double execute(OpenMM::ContextImpl& context, bool includeForces, bool includeEnergy);
 private:
-    deepmd::DeepPot deepmodel;
+    deepmd::NNPInter deepmodel;
     double dpscale;
     std::vector<int> types;
     bool doubleModel;

@@ -1,7 +1,7 @@
 #ifndef CUDA_DEEPMD_KERNELS_H_
 #define CUDA_DEEPMD_KERNELS_H_
 
-#include "deepmd/DeepPot.h"
+#include "deepmd/NNPInter.h"
 #include "DeepMDKernels.h"
 #include "openmm/cuda/CudaContext.h"
 #include "openmm/cuda/CudaArray.h"
@@ -36,7 +36,7 @@ public:
      */
     double execute(OpenMM::ContextImpl& context, bool includeForces, bool includeEnergy);
 private:
-    deepmd::DeepPot deepmodel;
+    deepmd::NNPInter deepmodel;
     std::vector<int> types;
     bool hasInitializedKernel;
     OpenMM::CudaContext& cu;
