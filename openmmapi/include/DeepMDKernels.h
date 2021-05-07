@@ -5,7 +5,7 @@
 #include "openmm/KernelImpl.h"
 #include "openmm/Platform.h"
 #include "openmm/System.h"
-#include "deepmd/DeepPot.h"
+#include "deepmd/NNPInter.h"
 #include <string>
 
 namespace DeepMDPlugin {
