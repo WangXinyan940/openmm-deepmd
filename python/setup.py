@@ -13,7 +13,7 @@ tensorflow_lib_header_dir = '@TENSORFLOW_DIR@/include'
 tensorflow_lib_library_dir = '@TENSORFLOW_DIR@/lib'
 
 # setup extra compile and link arguments on Mac
-extra_compile_args = ['-std=c++11']
+extra_compile_args = ['-std=c++11', '-D_GLIBCXX_USE_CXX11_ABI=0']
 extra_link_args = ['-ldeepmd', '-ldeepmd_op']
 
 if platform.system() == 'Darwin':
